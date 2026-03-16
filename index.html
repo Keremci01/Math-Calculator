@@ -63,6 +63,8 @@ border:1px solid #444;
 
 </div>
 
+<button onclick="setMode('calculator')">🧮 Hesap Makinesi</button>
+
 <button onclick="toggleDark()">🌙 Dark Mode</button>
 
 </div>
@@ -92,6 +94,26 @@ border:1px solid #444;
 
 <div id="plot"></div>
 <div id="result"></div>
+
+<div id="calculator" style="display:none; max-width:260px; margin-top:20px;">
+
+<input id="calcDisplay" style="width:100%;padding:10px;font-size:20px;margin-bottom:10px;" placeholder="0">
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+
+<button onclick="calc('7')">7</button> <button onclick="calc('8')">8</button> <button onclick="calc('9')">9</button> <button onclick="calc('/')">÷</button>
+
+<button onclick="calc('4')">4</button> <button onclick="calc('5')">5</button> <button onclick="calc('6')">6</button> <button onclick="calc('*')">×</button>
+
+<button onclick="calc('1')">1</button> <button onclick="calc('2')">2</button> <button onclick="calc('3')">3</button> <button onclick="calc('-')">−</button>
+
+<button onclick="calc('0')">0</button> <button onclick="calc('.')">.</button> <button onclick="calculate()">=</button> <button onclick="calc('+')">+</button>
+
+<button onclick="clearCalc()">C</button>
+
+</div>
+
+</div>
 
 </div>
 
@@ -157,6 +179,8 @@ clearInputs()
 plot.innerHTML=""
 result.innerHTML=""
 
+document.getElementById("calculator").style.display="none"
+
 if(m==="function"){
 title.innerText="Fonksiyon Grafiği"
 }
@@ -208,6 +232,14 @@ if(m==="limit"){
 title.innerText="Limit"
 
 x0.style.display="inline"
+
+}
+
+if(m==="calculator"){
+
+title.innerText="Hesap Makinesi"
+document.getElementById("calculator").style.display="block"
+return
 
 }
 
@@ -391,6 +423,30 @@ result.innerHTML="Hata: "+e.message
 
 }
 
+}
+
+function calc(val){
+document.getElementById("calcDisplay").value+=val
+}
+
+function calculate(){
+
+let val=document.getElementById("calcDisplay").value
+
+try{
+
+document.getElementById("calcDisplay").value=math.evaluate(val)
+
+}catch{
+
+document.getElementById("calcDisplay").value="Hata"
+
+}
+
+}
+
+function clearCalc(){
+document.getElementById("calcDisplay").value=""
 }
 
 function downloadPNG(){
