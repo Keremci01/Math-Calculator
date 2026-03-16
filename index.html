@@ -17,10 +17,6 @@ background:#121212;
 color:white;
 }
 
-.dark #content{
-background:#1e1e1e;
-}
-
 .dark #menu{
 background:#0d1b2a;
 }
@@ -37,16 +33,6 @@ color:white;
 border:1px solid #444;
 }
 
-table{
-margin-top:20px;
-border-collapse:collapse;
-}
-
-td,th{
-padding:6px 10px;
-border:1px solid #aaa;
-}
-
 </style>
 
 </head>
@@ -59,27 +45,31 @@ border:1px solid #aaa;
 
 <h3>Menü</h3>
 
-<button onclick="toggleFunctions()">Fonksiyonlar ▼</button>
+<button onclick="toggleGroup('funcGroup')">Fonksiyonlar ▼</button>
 
-<div id="functionsMenu" style="display:none">
+<div id="funcGroup" style="display:none">
 
 <button onclick="setMode('function')">Fonksiyon Grafiği</button>
 
-<button onclick="setMode('table')">Fonksiyon Tablosu</button>
-
-<button onclick="setMode('point')">Nokta Ekle</button>
+<button onclick="setMode('multi')">Çoklu Fonksiyon Çiz</button>
 
 <button onclick="setMode('distance')">İki Nokta Mesafe</button>
 
 </div>
 
-<button onclick="setMode('derivative')">Türev Grafiği</button>
+<button onclick="toggleGroup('analysisGroup')">Analiz ▼</button>
 
-<button onclick="setMode('integral')">İntegral Alanı</button>
+<div id="analysisGroup" style="display:none">
 
-<button onclick="setMode('tangent')">Teğet Doğrusu</button>
+<button onclick="setMode('derivative')">Türev</button>
 
-<button onclick="setMode('limit')">Limit Grafiği</button>
+<button onclick="setMode('integral')">İntegral</button>
+
+<button onclick="setMode('tangent')">Teğet</button>
+
+<button onclick="setMode('limit')">Limit</button>
+
+</div>
 
 <button onclick="toggleDark()">🌙 Dark Mode</button>
 
@@ -91,6 +81,9 @@ border:1px solid #aaa;
 
 <input id="func" value="x^2">
 
+<input id="func2" placeholder="ikinci fonksiyon" style="display:none">
+<input id="func3" placeholder="üçüncü fonksiyon" style="display:none">
+
 <input id="a" type="number" placeholder="a" style="display:none">
 <input id="b" type="number" placeholder="b" style="display:none">
 <input id="x0" type="number" placeholder="x noktası" style="display:none">
@@ -100,275 +93,290 @@ border:1px solid #aaa;
 <input id="x2" type="number" placeholder="x2" style="display:none">
 <input id="y2" type="number" placeholder="y2" style="display:none">
 
+<br><br>
+
 <button onclick="draw()">Grafiği Çiz</button>
 <button onclick="downloadPNG()">PNG indir</button>
 
 <div id="plot"></div>
 
-<div id="table"></div>
-
-<hr style="margin:40px 0">
-
-<h2>AI Matematik Asistanı</h2>
-
-<input id="aiInput" placeholder="Matematik sorusu yaz">
-<button onclick="askAI()">Sor</button>
-
-<div id="aiAnswer" style="margin-top:20px"></div>
+<div id="result"></div>
 
 </div>
 
 <script>
 
-const API_KEY="AIzaSyAZocNHOfHLnIctWWsDmehkTgIlzxXipkY";
-
-let mode="function";
+let mode="function"
 
 function toggleMenu(){
 
-let m=document.getElementById("menu");
+let m=document.getElementById("menu")
 
-m.style.display = m.style.display==="block" ? "none":"block";
+m.style.display = m.style.display==="block" ? "none":"block"
 
 }
 
-function toggleFunctions(){
+function toggleGroup(id){
 
-let m=document.getElementById("functionsMenu");
+let g=document.getElementById(id)
 
-m.style.display = m.style.display==="block" ? "none":"block";
+g.style.display = g.style.display==="block" ? "none":"block"
 
 }
 
 function toggleDark(){
 
-document.body.classList.toggle("dark");
+document.body.classList.toggle("dark")
+
+}
+
+function hideInputs(){
+
+func2.style.display="none"
+func3.style.display="none"
+
+a.style.display="none"
+b.style.display="none"
+
+x0.style.display="none"
+
+x1.style.display="none"
+y1.style.display="none"
+x2.style.display="none"
+y2.style.display="none"
 
 }
 
 function setMode(m){
 
-mode=m;
+mode=m
 
-toggleMenu();
+hideInputs()
 
-document.getElementById("a").style.display="none";
-document.getElementById("b").style.display="none";
-document.getElementById("x0").style.display="none";
-document.getElementById("x1").style.display="none";
-document.getElementById("y1").style.display="none";
-document.getElementById("x2").style.display="none";
-document.getElementById("y2").style.display="none";
+result.innerHTML=""
 
-document.getElementById("table").innerHTML="";
+if(m==="multi"){
 
-if(mode==="function"){
-title.innerText="Fonksiyon Grafiği";
+title.innerText="Çoklu Fonksiyon"
+
+func2.style.display="inline"
+func3.style.display="inline"
+
 }
 
-if(mode==="table"){
-title.innerText="Fonksiyon Tablosu";
+if(m==="distance"){
+
+title.innerText="İki Nokta Mesafe"
+
+x1.style.display="inline"
+y1.style.display="inline"
+
+x2.style.display="inline"
+y2.style.display="inline"
+
 }
 
-if(mode==="point"){
-title.innerText="Nokta Ekle";
-x1.style.display="inline";
-y1.style.display="inline";
+if(m==="derivative"){
+
+title.innerText="Türev Grafiği"
+
 }
 
-if(mode==="distance"){
-title.innerText="İki Nokta Mesafe";
-x1.style.display="inline";
-y1.style.display="inline";
-x2.style.display="inline";
-y2.style.display="inline";
+if(m==="integral"){
+
+title.innerText="İntegral Alanı"
+
+a.style.display="inline"
+b.style.display="inline"
+
 }
 
-if(mode==="derivative"){
-title.innerText="Türev Grafiği";
+if(m==="tangent"){
+
+title.innerText="Teğet"
+
+x0.style.display="inline"
+
 }
 
-if(mode==="integral"){
-title.innerText="İntegral Alanı";
-a.style.display="inline";
-b.style.display="inline";
+if(m==="limit"){
+
+title.innerText="Limit"
+
+x0.style.display="inline"
+
 }
 
-if(mode==="tangent"){
-title.innerText="Teğet Doğrusu";
-x0.style.display="inline";
-}
-
-if(mode==="limit"){
-title.innerText="Limit Grafiği";
-x0.style.display="inline";
-}
-
-draw();
+draw()
 
 }
 
 function draw(){
 
-plot.innerHTML="";
+plot.innerHTML=""
 
-let f=func.value;
+let width=content.offsetWidth-120
 
-let width=content.offsetWidth-120;
+let f=func.value
 
 try{
 
 if(mode==="function"){
 
 functionPlot({
+
 target:"#plot",
 width:width,
 height:400,
 grid:true,
+
 data:[
 {fn:f}
 ]
-});
+
+})
 
 }
 
-if(mode==="derivative"){
+if(mode==="multi"){
 
-let d=math.derivative(f,"x").toString();
+let data=[{fn:f}]
+
+if(func2.value!="") data.push({fn:func2.value})
+if(func3.value!="") data.push({fn:func3.value})
 
 functionPlot({
+
 target:"#plot",
 width:width,
 height:400,
 grid:true,
-data:[
-{fn:f},
-{fn:d}
-]
-});
+data:data
 
-}
-
-if(mode==="integral"){
-
-let A=parseFloat(a.value);
-let B=parseFloat(b.value);
-
-functionPlot({
-target:"#plot",
-width:width,
-height:400,
-grid:true,
-data:[
-{fn:f,color:"black"},
-{fn:f,range:[A,B],closed:true,color:"skyblue"}
-]
-});
-
-}
-
-if(mode==="tangent"){
-
-let X=parseFloat(x0.value);
-
-let y=math.evaluate(f,{x:X});
-let d=math.derivative(f,"x").toString();
-let slope=math.evaluate(d,{x:X});
-
-let t=`${slope}*(x-${X})+${y}`;
-
-functionPlot({
-target:"#plot",
-width:width,
-height:400,
-grid:true,
-data:[
-{fn:f},
-{fn:t},
-{points:[[X,y]],fnType:"points"}
-]
-});
-
-}
-
-if(mode==="limit"){
-
-let X=parseFloat(x0.value);
-
-functionPlot({
-target:"#plot",
-width:width,
-height:400,
-grid:true,
-data:[
-{fn:f},
-{fn:`${X}`,range:[-10,10]}
-]
-});
-
-}
-
-if(mode==="point"){
-
-let X=parseFloat(x1.value);
-let Y=parseFloat(y1.value);
-
-functionPlot({
-target:"#plot",
-width:width,
-height:400,
-grid:true,
-data:[
-{points:[[X,Y]],fnType:"points"}
-]
-});
+})
 
 }
 
 if(mode==="distance"){
 
-let X1=parseFloat(x1.value);
-let Y1=parseFloat(y1.value);
-let X2=parseFloat(x2.value);
-let Y2=parseFloat(y2.value);
+let X1=parseFloat(x1.value)
+let Y1=parseFloat(y1.value)
+let X2=parseFloat(x2.value)
+let Y2=parseFloat(y2.value)
 
-let d=Math.sqrt((X2-X1)**2+(Y2-Y1)**2);
+let d=Math.sqrt((X2-X1)**2+(Y2-Y1)**2)
 
-table.innerHTML="Mesafe = "+d;
+result.innerHTML="Mesafe = "+d
 
 functionPlot({
+
 target:"#plot",
 width:width,
 height:400,
 grid:true,
+
 data:[
 {points:[[X1,Y1],[X2,Y2]],fnType:"points"}
 ]
-});
+
+})
 
 }
 
-if(mode==="table"){
+if(mode==="derivative"){
 
-let html="<table><tr><th>x</th><th>f(x)</th></tr>";
+let d=math.derivative(f,"x").toString()
 
-for(let i=-5;i<=5;i++){
+functionPlot({
 
-let y=math.evaluate(f,{x:i});
+target:"#plot",
+width:width,
+height:400,
+grid:true,
 
-html+=`<tr><td>${i}</td><td>${y}</td></tr>`;
+data:[
+{fn:f},
+{fn:d}
+
+]
+
+})
 
 }
 
-html+="</table>";
+if(mode==="integral"){
 
-table.innerHTML=html;
+let A=parseFloat(a.value)
+let B=parseFloat(b.value)
+
+functionPlot({
+
+target:"#plot",
+width:width,
+height:400,
+grid:true,
+
+data:[
+{fn:f,color:"black"},
+{fn:f,range:[A,B],closed:true,color:"skyblue"}
+]
+
+})
+
+}
+
+if(mode==="tangent"){
+
+let X=parseFloat(x0.value)
+
+let y=math.evaluate(f,{x:X})
+
+let d=math.derivative(f,"x").toString()
+
+let slope=math.evaluate(d,{x:X})
+
+let t=`${slope}*(x-${X})+${y}`
+
+functionPlot({
+
+target:"#plot",
+width:width,
+height:400,
+grid:true,
+
+data:[
+{fn:f},
+{fn:t},
+{points:[[X,y]],fnType:"points"}
+]
+
+})
+
+}
+
+if(mode==="limit"){
+
+let X=parseFloat(x0.value)
+
+functionPlot({
+
+target:"#plot",
+width:width,
+height:400,
+grid:true,
+
+data:[
+{fn:f},
+{fn:`${X}`,range:[-10,10]}
+]
+
+})
 
 }
 
 }catch(e){
 
-console.log(e);
+console.log(e)
 
 }
 
@@ -376,87 +384,40 @@ console.log(e);
 
 function downloadPNG(){
 
-let svg=document.querySelector("#plot svg");
+let svg=document.querySelector("#plot svg")
 
-let serializer=new XMLSerializer();
-let source=serializer.serializeToString(svg);
+let serializer=new XMLSerializer()
 
-let img=new Image();
+let source=serializer.serializeToString(svg)
 
-img.src="data:image/svg+xml;base64,"+btoa(source);
+let img=new Image()
 
-let canvas=document.createElement("canvas");
+img.src="data:image/svg+xml;base64,"+btoa(source)
 
-canvas.width=800;
-canvas.height=500;
+let canvas=document.createElement("canvas")
 
-let ctx=canvas.getContext("2d");
+canvas.width=800
+canvas.height=500
+
+let ctx=canvas.getContext("2d")
 
 img.onload=function(){
 
-ctx.drawImage(img,0,0);
+ctx.drawImage(img,0,0)
 
-let a=document.createElement("a");
+let a=document.createElement("a")
 
-a.download="graph.png";
+a.download="graph.png"
 
-a.href=canvas.toDataURL("image/png");
+a.href=canvas.toDataURL("image/png")
 
-a.click();
-
-}
-
-}
-
-async function askAI(){
-
-let q=aiInput.value;
-
-aiAnswer.innerText="AI düşünüyor...";
-
-try{
-
-let response=await fetch(
-"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-contents:[
-{
-parts:[
-{
-text:"Bir matematik öğretmeni gibi adım adım çöz ve neden yaptığını açıkla: "+q
-}
-]
-}
-]
-})
-});
-
-let data=await response.json();
-
-if(data.candidates){
-
-aiAnswer.innerText=data.candidates[0].content.parts[0].text;
-
-}else{
-
-aiAnswer.innerText="AI cevap veremedi.";
-
-}
-
-}catch(e){
-
-aiAnswer.innerText="Bağlantı hatası.";
+a.click()
 
 }
 
 }
 
-window.onload=draw;
+window.onload=draw
 
 </script>
 
