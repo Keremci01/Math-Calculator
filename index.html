@@ -5,10 +5,55 @@
 <meta charset="utf-8">
 <title>Math Calculator</title>
 
-<link rel="stylesheet" href="index.css">
-
 <script src="https://cdn.jsdelivr.net/npm/function-plot/dist/function-plot.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f4f6f9;
+}
+
+#hamburger{
+font-size:28px;
+position:fixed;
+top:10px;
+left:10px;
+cursor:pointer;
+background:white;
+padding:8px 12px;
+border-radius:6px;
+}
+
+#menu{
+display:none;
+position:fixed;
+top:50px;
+left:10px;
+background:white;
+padding:20px;
+border-radius:8px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+#menu button{
+display:block;
+margin:10px 0;
+width:150px;
+}
+
+#content{
+margin-left:120px;
+padding:40px;
+}
+
+#plot{
+margin-top:30px;
+}
+
+</style>
 
 </head>
 
@@ -20,11 +65,10 @@
 
 <h3>Menü</h3>
 
-<button onclick="setMode('function')">Fonksiyon Grafiği</button>
-<button onclick="setMode('derivative')">Türev Grafiği</button>
-<button onclick="setMode('integral')">İntegral Alanı</button>
-<button onclick="setMode('tangent')">Teğet Doğrusu</button>
-<button onclick="setMode('limit')">Limit Grafiği</button>
+<button onclick="setMode('function')">Fonksiyon</button>
+<button onclick="setMode('derivative')">Türev</button>
+<button onclick="setMode('integral')">İntegral</button>
+<button onclick="setMode('tangent')">Teğet</button>
 
 </div>
 
@@ -66,8 +110,6 @@ function setMode(m){
 
 mode=m;
 
-toggleMenu();
-
 document.getElementById("a").style.display="none";
 document.getElementById("b").style.display="none";
 document.getElementById("x0").style.display="none";
@@ -91,11 +133,6 @@ document.getElementById("title").innerText="Teğet Doğrusu";
 document.getElementById("x0").style.display="inline";
 }
 
-if(mode==="limit"){
-document.getElementById("title").innerText="Limit Grafiği";
-document.getElementById("x0").style.display="inline";
-}
-
 draw();
 
 }
@@ -106,7 +143,7 @@ document.getElementById("plot").innerHTML="";
 
 let f=document.getElementById("func").value;
 
-let width=document.getElementById("content").offsetWidth-120;
+let width=600;
 
 try{
 
@@ -146,17 +183,14 @@ let a=parseFloat(document.getElementById("a").value);
 let b=parseFloat(document.getElementById("b").value);
 
 functionPlot({
-
 target:"#plot",
 width:width,
 height:400,
 grid:true,
-
 data:[
 {fn:f,color:"black"},
 {fn:f,range:[a,b],closed:true,color:"skyblue"}
 ]
-
 });
 
 }
@@ -172,38 +206,15 @@ let slope=math.evaluate(d,{x:x0});
 let tangent=`${slope}*(x-${x0})+${f0}`;
 
 functionPlot({
-
 target:"#plot",
 width:width,
 height:400,
 grid:true,
-
 data:[
 {fn:f,color:"black"},
 {fn:tangent,color:"red"},
 {points:[[x0,f0]],fnType:"points",color:"red"}
 ]
-
-});
-
-}
-
-if(mode==="limit"){
-
-let x0=parseFloat(document.getElementById("x0").value);
-
-functionPlot({
-
-target:"#plot",
-width:width,
-height:400,
-grid:true,
-
-data:[
-{fn:f,color:"black"},
-{fn:`${x0}`,range:[-10,10],color:"red"}
-]
-
 });
 
 }
@@ -234,7 +245,7 @@ contents:[
 {
 parts:[
 {
-text:"Bir matematik öğretmeni gibi adım adım çöz ve neden yaptığını açıkla: "+q
+text:"Bir matematik öğretmeni gibi adım adım çöz: "+q
 }
 ]
 }
@@ -242,11 +253,9 @@ text:"Bir matematik öğretmeni gibi adım adım çöz ve neden yaptığını a�
 })
 });
 
-let data = await response.json();
+let data=await response.json();
 
-console.log(data);
-
-if(data.candidates && data.candidates.length > 0){
+if(data.candidates){
 
 let ans=data.candidates[0].content.parts[0].text;
 
@@ -261,8 +270,6 @@ document.getElementById("aiAnswer").innerText="AI cevap veremedi.";
 }catch(e){
 
 document.getElementById("aiAnswer").innerText="Bağlantı hatası.";
-
-console.log(e);
 
 }
 
