@@ -26,7 +26,7 @@ left:10px;
 cursor:pointer;
 background:white;
 padding:5px 10px;
-z-index:1000;
+z-index:1001;
 }
 
 /* menu */
@@ -41,7 +41,7 @@ background:#222;
 color:white;
 padding:20px;
 display:none;
-z-index:999;
+z-index:1000;
 }
 
 #menu button{
@@ -73,6 +73,8 @@ height:500px;
 <div id="hamburger" onclick="toggleMenu()">☰</div>
 
 <div id="menu">
+
+<div style="font-size:30px;cursor:pointer;margin-bottom:20px;" onclick="toggleMenu()">✖</div>
 
 <h3>Menü</h3>
 
@@ -109,7 +111,7 @@ m.style.display="block";
 function showGraph(){
 
 document.getElementById("title").innerHTML="Fonksiyon Grafiği";
-
+toggleMenu();
 draw();
 
 }
@@ -117,7 +119,7 @@ draw();
 function showDerivative(){
 
 document.getElementById("title").innerHTML="Türev Grafiği";
-
+toggleMenu();
 drawDerivative();
 
 }
