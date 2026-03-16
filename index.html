@@ -1,10 +1,10 @@
-
+```html
 <!DOCTYPE html>
 <html>
 <head>
 
 <meta charset="utf-8">
-<title>Math Graph</title>
+<title>Math Calculator</title>
 
 <link rel="stylesheet" href="index.css">
 
@@ -43,6 +43,15 @@
 
 <div id="plot"></div>
 
+<hr style="margin:40px 0">
+
+<h2>AI Matematik Asistanı</h2>
+
+<input id="aiInput" placeholder="Matematik sorusu yaz">
+<button onclick="askAI()">Sor</button>
+
+<div id="aiAnswer" style="margin-top:20px"></div>
+
 </div>
 
 <script>
@@ -57,6 +66,7 @@ m.style.display = m.style.display==="block" ? "none" : "block";
 function setMode(m){
 
 mode=m;
+
 toggleMenu();
 
 document.getElementById("a").style.display="none";
@@ -88,6 +98,7 @@ document.getElementById("x0").style.display="inline";
 }
 
 draw();
+
 }
 
 function draw(){
@@ -144,9 +155,7 @@ grid:true,
 
 data:[
 {fn:f,color:"black"},
-{fn:f,range:[a,b],closed:true,color:"skyblue"},
-{fn:`${a}`,range:[-10,10],color:"black"},
-{fn:`${b}`,range:[-10,10],color:"black"}
+{fn:f,range:[a,b],closed:true,color:"skyblue"}
 ]
 
 });
@@ -206,7 +215,36 @@ console.log(e);
 
 }
 
-document.getElementById("func").addEventListener("input",draw);
+async function askAI(){
+
+let q=document.getElementById("aiInput").value;
+
+let response = await fetch(
+"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyDEUurJTYceMm4vfQU1Ifk9-1frD4Vtg9E",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+
+contents:[{
+parts:[{
+text:"Bir matematik öğretmeni gibi adım adım çöz ve neden yaptığını açıkla: "+q
+}]
+}]
+
+})
+
+});
+
+let data=await response.json();
+
+let ans=data.candidates[0].content.parts[0].text;
+
+document.getElementById("aiAnswer").innerText=ans;
+
+}
 
 window.onload=draw;
 
