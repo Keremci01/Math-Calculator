@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="utf-8">
 <title>Math Graph</title>
 
@@ -13,50 +12,41 @@
 body{
 font-family:Arial;
 margin:0;
-background:linear-gradient(135deg,#eef2ff,#e0f2fe);
+background:#f4f6f9;
 }
-
-/* HAMBURGER */
 
 #hamburger{
 font-size:26px;
 position:fixed;
-top:15px;
-left:15px;
-cursor:pointer;
+top:10px;
+left:10px;
 background:white;
-padding:10px 14px;
-border-radius:12px;
-box-shadow:0 6px 15px rgba(0,0,0,0.2);
+padding:8px 12px;
+cursor:pointer;
+border-radius:8px;
 }
-
-/* MENU */
 
 #menu{
 position:fixed;
 left:0;
 top:0;
-width:240px;
+width:230px;
 height:100%;
 background:#111827;
 color:white;
-padding:25px;
-padding-top:80px;
+padding:20px;
+padding-top:60px;
 display:none;
-}
-
-#menu h3{
-margin-top:0;
 }
 
 #menu button{
 width:100%;
-padding:12px;
-margin:8px 0;
+margin:6px 0;
+padding:10px;
 background:#1f2937;
 color:white;
 border:none;
-border-radius:10px;
+border-radius:8px;
 cursor:pointer;
 }
 
@@ -64,78 +54,33 @@ cursor:pointer;
 background:#2563eb;
 }
 
-/* SUBMENU */
-
-.submenu{
-display:none;
-margin-left:10px;
-}
-
-/* CONTENT */
-
 #content{
-margin-left:70px;
+margin-left:60px;
 padding:40px;
 }
 
-/* INPUT */
-
 input{
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
-margin-right:5px;
+padding:8px;
+margin:4px;
 }
-
-/* BUTTON */
-
-#content button{
-padding:10px 20px;
-border:none;
-border-radius:10px;
-background:#2563eb;
-color:white;
-cursor:pointer;
-}
-
-/* GRAPH */
 
 #plot{
-margin-top:30px;
+margin-top:20px;
 background:white;
 padding:20px;
-border-radius:14px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
+border-radius:10px;
 }
-
-/* DARK MODE */
 
 .dark{
 background:#121212;
 color:white;
 }
 
-.dark #menu{
-background:#0d1b2a;
-}
-
 .dark #plot{
 background:#1e1e1e;
 }
 
-.dark input{
-background:#1e1e1e;
-color:white;
-border:1px solid #444;
-}
-
-.dark button{
-background:#1e1e1e;
-color:white;
-}
-
 </style>
-
 </head>
 
 <body>
@@ -148,25 +93,22 @@ color:white;
 
 <button onclick="toggleFunctions()">Fonksiyonlar ▼</button>
 
-<div id="functionsMenu" class="submenu">
+<div id="functionsMenu" style="display:none">
 
 <button onclick="setMode('function')">Fonksiyon Grafiği</button>
 
+<button onclick="setMode('table')">Fonksiyon Tablosu</button>
+
+<button onclick="setMode('point')">Nokta Ekle</button>
+
+<button onclick="setMode('distance')">İki Nokta Mesafe</button>
+
 </div>
-
-<button onclick="toggleAnalysis()">Analiz ▼</button>
-
-<div id="analysisMenu" class="submenu">
 
 <button onclick="setMode('derivative')">Türev</button>
-
-<button onclick="setMode('integral')">İntegral Alanı</button>
-
+<button onclick="setMode('integral')">İntegral</button>
 <button onclick="setMode('tangent')">Teğet</button>
-
 <button onclick="setMode('limit')">Limit</button>
-
-</div>
 
 <button onclick="toggleDark()">🌙 Dark Mode</button>
 
@@ -178,201 +120,194 @@ color:white;
 
 <input id="func" value="x^2">
 
-<input id="a" placeholder="a" type="number" style="display:none">
-<input id="b" placeholder="b" type="number" style="display:none">
-<input id="x0" placeholder="x noktası" type="number" style="display:none">
+<input id="a" placeholder="a" style="display:none">
+<input id="b" placeholder="b" style="display:none">
+
+<input id="x0" placeholder="x noktası" style="display:none">
 
 <button onclick="draw()">Grafiği Çiz</button>
 
+<button onclick="downloadPNG()">PNG indir</button>
+
 <div id="plot"></div>
+
+<div id="table"></div>
 
 </div>
 
 <script>
 
-let mode="function"
+let mode="function";
+let points=[];
 
 function toggleMenu(){
-
-let m=document.getElementById("menu")
-
-m.style.display = m.style.display==="block" ? "none":"block"
-
+let m=document.getElementById("menu");
+m.style.display = m.style.display==="block" ? "none":"block";
 }
 
 function toggleFunctions(){
-
-let m=document.getElementById("functionsMenu")
-
-m.style.display = m.style.display==="block" ? "none":"block"
-
-}
-
-function toggleAnalysis(){
-
-let m=document.getElementById("analysisMenu")
-
-m.style.display = m.style.display==="block" ? "none":"block"
-
+let m=document.getElementById("functionsMenu");
+m.style.display = m.style.display==="block" ? "none":"block";
 }
 
 function toggleDark(){
-
-document.body.classList.toggle("dark")
-
+document.body.classList.toggle("dark");
 }
 
 function setMode(m){
 
-mode=m
+mode=m;
 
-a.style.display="none"
-b.style.display="none"
-x0.style.display="none"
-
-if(mode==="function"){
-
-title.innerText="Fonksiyon Grafiği"
-
-}
-
-if(mode==="derivative"){
-
-title.innerText="Türev Grafiği"
-
-}
+document.getElementById("a").style.display="none";
+document.getElementById("b").style.display="none";
+document.getElementById("x0").style.display="none";
 
 if(mode==="integral"){
-
-title.innerText="İntegral Alanı"
-
-a.style.display="inline"
-b.style.display="inline"
-
+a.style.display="inline";
+b.style.display="inline";
 }
 
-if(mode==="tangent"){
-
-title.innerText="Teğet Doğrusu"
-
-x0.style.display="inline"
-
+if(mode==="tangent" || mode==="limit"){
+x0.style.display="inline";
 }
 
-if(mode==="limit"){
-
-title.innerText="Limit"
-
-x0.style.display="inline"
-
-}
-
-draw()
+draw();
 
 }
 
 function draw(){
 
-document.getElementById("plot").innerHTML=""
+document.getElementById("plot").innerHTML="";
+document.getElementById("table").innerHTML="";
 
-let f=func.value
+let f=document.getElementById("func").value;
 
-let width=800
+let width=700;
+
+let data=[];
 
 try{
 
 if(mode==="function"){
-
-functionPlot({
-target:"#plot",
-width:width,
-height:400,
-grid:true,
-data:[{fn:f}]
-})
-
+data=[{fn:f}];
 }
 
 if(mode==="derivative"){
-
-let d=math.derivative(f,"x").toString()
-
-functionPlot({
-target:"#plot",
-width:width,
-height:400,
-grid:true,
-data:[{fn:d}]
-})
-
+let d=math.derivative(f,"x").toString();
+data=[{fn:d,color:"red"}];
 }
 
 if(mode==="integral"){
 
-let A=parseFloat(a.value)
-let B=parseFloat(b.value)
+let A=parseFloat(a.value);
+let B=parseFloat(b.value);
 
-functionPlot({
-target:"#plot",
-width:width,
-height:400,
-grid:true,
-data:[
+data=[
 {fn:f},
 {fn:f,range:[A,B],closed:true,color:"skyblue"}
-]
-})
+];
 
 }
 
 if(mode==="tangent"){
 
-let X=parseFloat(x0.value)
+let X=parseFloat(x0.value);
 
-let f0=math.evaluate(f,{x:X})
-let d=math.derivative(f,"x").toString()
-let slope=math.evaluate(d,{x:X})
+let y=math.evaluate(f,{x:X});
 
-let t=`${slope}*(x-${X})+${f0}`
+let d=math.derivative(f,"x").toString();
 
-functionPlot({
-target:"#plot",
-width:width,
-height:400,
-grid:true,
-data:[
+let slope=math.evaluate(d,{x:X});
+
+let t=`${slope}*(x-${X})+${y}`;
+
+data=[
 {fn:f},
 {fn:t,color:"red"},
-{points:[[X,f0]],fnType:"points"}
-]
-})
+{points:[[X,y]],fnType:"points"}
+];
 
 }
 
 if(mode==="limit"){
 
-let X=parseFloat(x0.value)
+let X=parseFloat(x0.value);
+
+data=[
+{fn:f},
+{fn:`${X}`,range:[-10,10],color:"red"}
+];
+
+}
 
 functionPlot({
 target:"#plot",
 width:width,
 height:400,
 grid:true,
-data:[
-{fn:f},
-{fn:`${X}`,range:[-10,10],color:"red"}
-]
-})
+data:data
+});
+
+if(mode==="table"){
+
+let html="<table border='1'><tr><th>x</th><th>f(x)</th></tr>";
+
+for(let i=-5;i<=5;i++){
+
+let y=math.evaluate(f,{x:i});
+
+html+=`<tr><td>${i}</td><td>${y}</td></tr>`;
+
+}
+
+html+="</table>";
+
+document.getElementById("table").innerHTML=html;
 
 }
 
 }catch(e){
-console.log(e)
+console.log(e);
 }
 
 }
 
-window.onload=draw
+function downloadPNG(){
+
+let svg=document.querySelector("#plot svg");
+
+let serializer=new XMLSerializer();
+
+let source=serializer.serializeToString(svg);
+
+let img=new Image();
+
+img.src="data:image/svg+xml;base64,"+btoa(source);
+
+let canvas=document.createElement("canvas");
+
+canvas.width=800;
+canvas.height=500;
+
+let ctx=canvas.getContext("2d");
+
+img.onload=function(){
+
+ctx.drawImage(img,0,0);
+
+let a=document.createElement("a");
+
+a.download="graph.png";
+
+a.href=canvas.toDataURL("image/png");
+
+a.click();
+
+}
+
+}
+
+window.onload=draw;
 
 </script>
 
