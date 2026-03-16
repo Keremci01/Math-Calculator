@@ -1,132 +1,46 @@
-/* GENEL SAYFA */
-
-body{
-font-family:'Segoe UI', Arial, sans-serif;
-margin:0;
-background:linear-gradient(135deg,#eef2f7,#dbeafe);
-color:#1f2937;
-}
-
-/* HAMBURGER */
-
-#hamburger{
-font-size:26px;
-position:fixed;
-top:15px;
-left:15px;
-cursor:pointer;
-background:white;
-padding:10px 14px;
-border-radius:14px;
-z-index:1001;
-box-shadow:0 6px 14px rgba(0,0,0,0.15);
-transition:0.2s;
-}
-
-#hamburger:hover{
-transform:scale(1.05);
-background:#f3f4f6;
-}
-
-/* MENÜ */
-
-#menu{
-position:fixed;
-left:0;
-top:0;
-width:240px;
-height:100%;
-background:#111827;
-color:white;
-padding:30px;
-padding-top:80px;
-display:none;
-box-shadow:4px 0 20px rgba(0,0,0,0.4);
-}
-
-#menu h3{
-margin-top:0;
-font-size:22px;
-margin-bottom:20px;
-}
-
-/* MENÜ BUTONLARI */
-
-#menu button{
-width:100%;
-padding:12px;
-margin:10px 0;
-border:none;
-background:#1f2937;
-color:white;
-border-radius:12px;
-cursor:pointer;
-font-size:15px;
-transition:0.25s;
-}
-
-#menu button:hover{
-background:#374151;
-transform:translateX(4px);
-}
-
-/* ANA İÇERİK */
-
-#content{
-margin-left:70px;
-padding:40px;
-}
-
-/* BAŞLIK */
-
-h2{
-font-size:28px;
-margin-bottom:20px;
-}
-
-/* INPUT */
-
-#content input{
-padding:10px 14px;
-border-radius:12px;
-border:1px solid #cbd5e1;
-font-size:15px;
-margin-right:8px;
-outline:none;
-transition:0.2s;
-}
-
-#content input:focus{
-border-color:#3b82f6;
-box-shadow:0 0 6px rgba(59,130,246,0.3);
-}
-
 /* GRAFİĞİ ÇİZ BUTONU */
 
 #content button{
-background:#3b82f6;
+
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
 color:white;
+
 border:none;
-padding:12px 24px;
+outline:none;
+
+padding:12px 28px;
+
 font-size:16px;
-border-radius:14px;
+font-weight:600;
+
+border-radius:12px;
+
 cursor:pointer;
-box-shadow:0 6px 14px rgba(0,0,0,0.2);
-transition:0.25s;
+
+box-shadow:0 8px 18px rgba(37,99,235,0.4);
+
+transition:all 0.25s ease;
+
 }
+
+/* HOVER */
 
 #content button:hover{
-background:#2563eb;
+
+background:linear-gradient(135deg,#1d4ed8,#1e40af);
+
 transform:translateY(-2px);
-box-shadow:0 8px 18px rgba(0,0,0,0.25);
+
+box-shadow:0 10px 22px rgba(37,99,235,0.5);
+
 }
 
-/* GRAFİK KUTUSU */
+/* TIKLANINCA */
 
-#plot{
-margin-top:30px;
-background:white;
-padding:20px;
-border-radius:18px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
+#content button:active{
+
+transform:scale(0.97);
+
+box-shadow:0 4px 10px rgba(0,0,0,0.25);
+
 }
