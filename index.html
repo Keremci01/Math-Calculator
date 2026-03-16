@@ -47,11 +47,6 @@ display:none;
 z-index:1000;
 }
 
-#menu h3{
-margin-left:35px;
-margin-bottom:25px;
-}
-
 #menu button{
 width:100%;
 padding:12px;
@@ -63,6 +58,8 @@ background:#2e2e2e;
 color:white;
 cursor:pointer;
 }
+
+/* content */
 
 #content{
 margin-left:60px;
@@ -226,18 +223,28 @@ var a=parseFloat(document.getElementById("a").value);
 var b=parseFloat(document.getElementById("b").value);
 
 functionPlot({
+
 target:'#plot',
 width:800,
 height:500,
 grid:true,
+
 data:[
-{fn:f},
+
+{
+fn:f,
+graphType:"polyline"
+},
+
 {
 fn:f,
 range:[a,b],
-closed:true
+closed:true,
+color:"red"
 }
+
 ]
+
 });
 
 }
