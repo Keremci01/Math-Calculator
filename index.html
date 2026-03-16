@@ -42,9 +42,20 @@
 
 <div id="plot"></div>
 
+<hr style="margin:40px 0">
+
+<h2>AI Matematik Asistanı</h2>
+
+<input id="aiInput" placeholder="Matematik sorusu yaz">
+<button onclick="askAI()">Sor</button>
+
+<div id="aiAnswer" style="margin-top:20px"></div>
+
 </div>
 
 <script>
+
+const API_KEY="AIzaSyAZocNHOfHLnIctWWsDmehkTgIlzxXipkY";
 
 let mode="function";
 
@@ -201,6 +212,60 @@ data:[
 
 }catch(e){
 console.log(e);
+}
+
+}
+
+async function askAI(){
+
+let q=document.getElementById("aiInput").value;
+
+document.getElementById("aiAnswer").innerText="AI düşünüyor...";
+
+try{
+
+let response = await fetch(
+"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+contents:[
+{
+parts:[
+{
+text:"Bir matematik öğretmeni gibi adım adım çöz ve neden yaptığını açıkla: "+q
+}
+]
+}
+]
+})
+});
+
+let data=await response.json();
+
+console.log(data);
+
+if(data.candidates){
+
+let ans=data.candidates[0].content.parts[0].text;
+
+document.getElementById("aiAnswer").innerText=ans;
+
+}else{
+
+document.getElementById("aiAnswer").innerText="AI cevap veremedi.";
+
+}
+
+}catch(e){
+
+document.getElementById("aiAnswer").innerText="Bağlantı hatası.";
+
+console.log(e);
+
 }
 
 }
