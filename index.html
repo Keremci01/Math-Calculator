@@ -12,23 +12,15 @@
 
 <style>
 
-.dark{
-background:#121212;
-color:white;
-}
+.submenu{display:none;margin-left:10px;}
 
-.dark #menu{
-background:#0d1b2a;
-}
+.dark{background:#121212;color:white;}
 
-.dark button{
-background:#1e1e1e;
-color:white;
-}
+.dark button{background:#1e1e1e;color:white;}
 
-.dark input{
-background:#1e1e1e;
-color:white;
+#pngBtn{
+margin-top:10px;
+float:right;
 }
 
 table{
@@ -38,7 +30,7 @@ margin-top:20px;
 
 td,th{
 border:1px solid gray;
-padding:5px;
+padding:6px;
 }
 
 </style>
@@ -53,11 +45,19 @@ padding:5px;
 
 <h3>Menü</h3>
 
+<button onclick="toggleFunctions()">Fonksiyonlar ▼</button>
+
+<div id="functionMenu" class="submenu">
+
 <button onclick="setMode('function')">Fonksiyon Grafiği</button>
 <button onclick="setMode('derivative')">Türev Grafiği</button>
 <button onclick="setMode('integral')">İntegral Alanı</button>
 <button onclick="setMode('tangent')">Teğet Doğrusu</button>
 <button onclick="setMode('limit')">Limit Grafiği</button>
+<button onclick="createTable()">Fonksiyon Tablosu</button>
+<button onclick="calculateDistance()">İki Nokta Mesafe</button>
+
+</div>
 
 <button onclick="toggleDark()">🌙 Dark Mode</button>
 
@@ -74,261 +74,290 @@ padding:5px;
 <input id="x0" type="number" placeholder="x noktası" style="display:none">
 
 <button onclick="draw()">Grafiği Çiz</button>
-<button onclick="calculateDistance()">Mesafeyi Hesapla</button>
-<button onclick="downloadPNG()">PNG indir</button>
-<button onclick="createTable()">Fonksiyon Tablosu</button>
 
 <div id="plot"></div>
 
-<div id="distanceResult" style="margin-top:15px"></div>
+<button id="pngBtn" onclick="downloadPNG()">PNG indir</button>
+
+<div id="distanceResult"></div>
 
 <div id="table"></div>
-
-<hr style="margin:40px 0">
-
-<h2>AI Matematik Asistanı</h2>
-
-<input id="aiInput" placeholder="Matematik sorusu yaz">
-<button onclick="askAI()">Sor</button>
-
-<div id="aiAnswer" style="margin-top:20px"></div>
 
 </div>
 
 <script>
 
-const API_KEY="YOUR_API_KEY";
-
-let mode="function";
-let points=[];
+let mode="function"
+let points=[]
 
 function toggleMenu(){
-let m=document.getElementById("menu");
-m.style.display = m.style.display==="block" ? "none" : "block";
+
+let m=document.getElementById("menu")
+m.style.display = m.style.display==="block" ? "none":"block"
+
+}
+
+function toggleFunctions(){
+
+let s=document.getElementById("functionMenu")
+s.style.display = s.style.display==="block" ? "none":"block"
+
 }
 
 function toggleDark(){
-document.body.classList.toggle("dark");
+
+document.body.classList.toggle("dark")
+
 }
 
 function setMode(m){
 
-mode=m;
+mode=m
 
-toggleMenu();
+toggleMenu()
 
-document.getElementById("a").style.display="none";
-document.getElementById("b").style.display="none";
-document.getElementById("x0").style.display="none";
+a.style.display="none"
+b.style.display="none"
+x0.style.display="none"
 
 if(mode==="function"){
-title.innerText="Fonksiyon Grafiği";
+title.innerText="Fonksiyon Grafiği"
 }
 
 if(mode==="derivative"){
-title.innerText="Türev Grafiği";
+title.innerText="Türev Grafiği"
 }
 
 if(mode==="integral"){
-title.innerText="İntegral Alanı";
-a.style.display="inline";
-b.style.display="inline";
+title.innerText="İntegral Alanı"
+a.style.display="inline"
+b.style.display="inline"
 }
 
 if(mode==="tangent"){
-title.innerText="Teğet Doğrusu";
-x0.style.display="inline";
+title.innerText="Teğet Doğrusu"
+x0.style.display="inline"
 }
 
 if(mode==="limit"){
-title.innerText="Limit Grafiği";
-x0.style.display="inline";
+title.innerText="Limit Grafiği"
+x0.style.display="inline"
 }
-
-draw();
 
 }
 
 function draw(){
 
-document.getElementById("plot").innerHTML="";
+document.getElementById("plot").innerHTML=""
 
-let funcs=document.getElementById("func").value.split(",");
+let f=func.value
 
-let width=document.getElementById("content").offsetWidth-120;
-
-let data=[];
-
-for(let f of funcs){
-data.push({fn:f.trim()});
-}
+let width=document.getElementById("content").offsetWidth-120
 
 try{
+
+if(mode==="function"){
 
 functionPlot({
 target:"#plot",
 width:width,
 height:400,
 grid:true,
-data:data
-});
+data:[{fn:f}]
+})
 
-setTimeout(addClickEvent,200);
+}
+
+if(mode==="derivative"){
+
+let d=math.derivative(f,"x").toString()
+
+functionPlot({
+target:"#plot",
+width:width,
+height:400,
+grid:true,
+data:[{fn:d}]
+})
+
+}
+
+if(mode==="integral"){
+
+let A=parseFloat(a.value)
+let B=parseFloat(b.value)
+
+functionPlot({
+target:"#plot",
+width:width,
+height:400,
+grid:true,
+data:[
+{fn:f,color:"black"},
+{fn:f,range:[A,B],closed:true,color:"skyblue"}
+]
+})
+
+}
+
+if(mode==="tangent"){
+
+let X=parseFloat(x0.value)
+
+let f0=math.evaluate(f,{x:X})
+let d=math.derivative(f,"x").toString()
+let slope=math.evaluate(d,{x:X})
+
+let t=`${slope}*(x-${X})+${f0}`
+
+functionPlot({
+target:"#plot",
+width:width,
+height:400,
+grid:true,
+data:[
+{fn:f},
+{fn:t,color:"red"},
+{points:[[X,f0]],fnType:"points"}
+]
+})
+
+}
+
+if(mode==="limit"){
+
+let X=parseFloat(x0.value)
+
+functionPlot({
+target:"#plot",
+width:width,
+height:400,
+grid:true,
+data:[
+{fn:f},
+{fn:`${X}`,range:[-10,10],color:"red"}
+]
+})
+
+}
+
+setTimeout(addClickEvent,200)
 
 }catch(e){
-console.log(e);
+console.log(e)
 }
 
 }
 
 function addClickEvent(){
 
-let svg=document.querySelector("#plot svg");
+let svg=document.querySelector("#plot svg")
 
-if(!svg) return;
+if(!svg)return
 
 svg.onclick=function(e){
 
-let rect=svg.getBoundingClientRect();
+let rect=svg.getBoundingClientRect()
 
-let x=(e.clientX-rect.left)/rect.width*20-10;
-let y=10-(e.clientY-rect.top)/rect.height*20;
+let x=(e.clientX-rect.left)/rect.width*20-10
+let y=10-(e.clientY-rect.top)/rect.height*20
 
-points.push({x,y});
+points.push({x,y})
 
-let circle=document.createElementNS("http://www.w3.org/2000/svg","circle");
+let circle=document.createElementNS("http://www.w3.org/2000/svg","circle")
 
-circle.setAttribute("cx",e.clientX-rect.left);
-circle.setAttribute("cy",e.clientY-rect.top);
-circle.setAttribute("r",5);
-circle.setAttribute("fill","red");
+circle.setAttribute("cx",e.clientX-rect.left)
+circle.setAttribute("cy",e.clientY-rect.top)
+circle.setAttribute("r",5)
+circle.setAttribute("fill","red")
 
-svg.appendChild(circle);
+svg.appendChild(circle)
 
-};
+}
 
 }
 
 function calculateDistance(){
 
 if(points.length<2){
-distanceResult.innerText="İki nokta seç.";
-return;
+
+distanceResult.innerText="Grafikte iki nokta seç"
+
+return
+
 }
 
-let p1=points[points.length-1];
-let p2=points[points.length-2];
+let p1=points[points.length-1]
+let p2=points[points.length-2]
 
-let d=Math.sqrt((p1.x-p2.x)**2+(p1.y-p2.y)**2);
+let d=Math.sqrt((p1.x-p2.x)**2+(p1.y-p2.y)**2)
 
-distanceResult.innerText="Mesafe: "+d.toFixed(4);
+distanceResult.innerText="Mesafe: "+d.toFixed(4)
 
 }
 
 function createTable(){
 
-let f=document.getElementById("func").value;
+let f=func.value
 
-let table="<table><tr><th>x</th><th>f(x)</th></tr>";
+let table="<table><tr><th>x</th><th>f(x)</th></tr>"
 
 for(let x=-5;x<=5;x++){
 
-let y;
+let y
 
 try{
-y=math.evaluate(f,{x:x});
+y=math.evaluate(f,{x:x})
 }catch{
-y="err";
+y="err"
 }
 
-table+=`<tr><td>${x}</td><td>${y}</td></tr>`;
+table+=`<tr><td>${x}</td><td>${y}</td></tr>`
 
 }
 
-table+="</table>";
+table+="</table>"
 
-document.getElementById("table").innerHTML=table;
+document.getElementById("table").innerHTML=table
 
 }
 
 function downloadPNG(){
 
-let svg=document.querySelector("#plot svg");
+let svg=document.querySelector("#plot svg")
 
-let serializer=new XMLSerializer();
-let source=serializer.serializeToString(svg);
+let serializer=new XMLSerializer()
 
-let img=new Image();
+let source=serializer.serializeToString(svg)
 
-let canvas=document.createElement("canvas");
+let img=new Image()
 
-canvas.width=800;
-canvas.height=400;
+let canvas=document.createElement("canvas")
 
-let ctx=canvas.getContext("2d");
+canvas.width=800
+canvas.height=400
+
+let ctx=canvas.getContext("2d")
 
 img.onload=function(){
 
-ctx.drawImage(img,0,0);
+ctx.drawImage(img,0,0)
 
-let a=document.createElement("a");
+let a=document.createElement("a")
 
-a.download="grafik.png";
-a.href=canvas.toDataURL();
+a.download="grafik.png"
 
-a.click();
+a.href=canvas.toDataURL()
 
-};
-
-img.src="data:image/svg+xml;base64,"+btoa(source);
+a.click()
 
 }
 
-async function askAI(){
-
-let q=document.getElementById("aiInput").value;
-
-aiAnswer.innerText="AI düşünüyor...";
-
-try{
-
-let response=await fetch(
-"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+API_KEY,
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-contents:[
-{
-parts:[
-{
-text:"Bir matematik öğretmeni gibi adım adım çöz: "+q
-}
-]
-}
-]
-})
-});
-
-let data=await response.json();
-
-if(data.candidates){
-aiAnswer.innerText=data.candidates[0].content.parts[0].text;
-}else{
-aiAnswer.innerText="AI cevap veremedi.";
-}
-
-}catch(e){
-
-aiAnswer.innerText="Bağlantı hatası.";
+img.src="data:image/svg+xml;base64,"+btoa(source)
 
 }
 
-}
-
-window.onload=draw;
+window.onload=draw
 
 </script>
 
