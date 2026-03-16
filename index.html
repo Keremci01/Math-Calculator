@@ -1,5 +1,5 @@
+```html
 <!DOCTYPE html>
-
 <html>
 <head>
 
@@ -7,7 +7,6 @@
 <title>Math Graph</title>
 
 <script src="https://cdn.jsdelivr.net/npm/function-plot/dist/function-plot.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
 
 <style>
@@ -59,6 +58,16 @@ margin-left:60px;
 padding:20px;
 }
 
+input{
+padding:8px;
+margin:5px;
+}
+
+button{
+padding:10px;
+cursor:pointer;
+}
+
 </style>
 
 </head>
@@ -71,7 +80,11 @@ padding:20px;
 
 <h3>Menü</h3>
 
-<button onclick="setMode('function')">Fonksiyon Grafiği</button> <button onclick="setMode('derivative')">Türev Grafiği</button> <button onclick="setMode('integral')">İntegral Alanı</button> <button onclick="setMode('tangent')">Teğet Doğrusu</button> <button onclick="setMode('limit')">Limit Grafiği</button>
+<button onclick="setMode('function')">Fonksiyon Grafiği</button>
+<button onclick="setMode('derivative')">Türev Grafiği</button>
+<button onclick="setMode('integral')">İntegral Alanı</button>
+<button onclick="setMode('tangent')">Teğet Doğrusu</button>
+<button onclick="setMode('limit')">Limit Grafiği</button>
 
 </div>
 
@@ -96,17 +109,13 @@ padding:20px;
 let mode="function";
 
 function toggleMenu(){
-
 let m=document.getElementById("menu");
-
 m.style.display = m.style.display==="block" ? "none" : "block";
-
 }
 
 function setMode(m){
 
 mode=m;
-
 toggleMenu();
 
 document.getElementById("a").style.display="none";
@@ -137,20 +146,23 @@ document.getElementById("title").innerText="Limit Grafiği";
 document.getElementById("x0").style.display="inline";
 }
 
+draw();
 }
 
 function draw(){
 
+document.getElementById("plot").innerHTML="";
+
 let f=document.getElementById("func").value;
+
+try{
 
 if(mode==="function"){
 
 functionPlot({
 target:"#plot",
-width:800,
+width:window.innerWidth-120,
 height:500,
-xAxis:{label:"x"},
-yAxis:{label:"y"},
 grid:true,
 data:[
 {fn:f}
@@ -165,10 +177,8 @@ let d=math.derivative(f,"x").toString();
 
 functionPlot({
 target:"#plot",
-width:800,
+width:window.innerWidth-120,
 height:500,
-xAxis:{label:"x"},
-yAxis:{label:"y"},
 grid:true,
 data:[
 {fn:d}
@@ -185,25 +195,16 @@ let b=parseFloat(document.getElementById("b").value);
 functionPlot({
 
 target:"#plot",
-width:800,
+width:window.innerWidth-120,
 height:500,
-xAxis:{label:"x"},
-yAxis:{label:"y"},
 grid:true,
 
 data:[
 
 {fn:f,color:"black"},
-
 {fn:f,range:[a,b],closed:true,color:"skyblue"},
-
 {fn:`${a}`,range:[-10,10],color:"black"},
-
-{fn:`${b}`,range:[-10,10],color:"black"},
-
-{points:[[a,0]],fnType:"points",color:"black"},
-
-{points:[[b,0]],fnType:"points",color:"black"}
+{fn:`${b}`,range:[-10,10],color:"black"}
 
 ]
 
@@ -224,18 +225,14 @@ let tangent=`${slope}*(x-${x0})+${f0}`;
 functionPlot({
 
 target:"#plot",
-width:800,
+width:window.innerWidth-120,
 height:500,
-xAxis:{label:"x"},
-yAxis:{label:"y"},
 grid:true,
 
 data:[
 
 {fn:f,color:"black"},
-
 {fn:tangent,color:"red"},
-
 {points:[[x0,f0]],fnType:"points",color:"red"}
 
 ]
@@ -251,16 +248,13 @@ let x0=parseFloat(document.getElementById("x0").value);
 functionPlot({
 
 target:"#plot",
-width:800,
+width:window.innerWidth-120,
 height:500,
-xAxis:{label:"x"},
-yAxis:{label:"y"},
 grid:true,
 
 data:[
 
 {fn:f,color:"black"},
-
 {fn:`${x0}`,range:[-10,10],color:"red"}
 
 ]
@@ -269,7 +263,26 @@ data:[
 
 }
 
+}catch(e){
+
+alert("Fonksiyon hatalı olabilir.");
+
 }
+
+}
+
+document.getElementById("func").addEventListener("input",draw);
+
+document.addEventListener("click",function(e){
+
+let menu=document.getElementById("menu");
+let ham=document.getElementById("hamburger");
+
+if(!menu.contains(e.target) && !ham.contains(e.target)){
+menu.style.display="none";
+}
+
+});
 
 window.onload=draw;
 
@@ -277,3 +290,4 @@ window.onload=draw;
 
 </body>
 </html>
+```
