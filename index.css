@@ -3,10 +3,10 @@
 body{
 font-family:Arial, Helvetica, sans-serif;
 margin:0;
-background:#f4f6f9;
+background:#eef2f7;
 }
 
-/* HAMBURGER MENÜ */
+/* HAMBURGER */
 
 #hamburger{
 font-size:26px;
@@ -16,9 +16,9 @@ left:12px;
 cursor:pointer;
 background:white;
 padding:8px 12px;
-border-radius:10px;
+border-radius:12px;
 z-index:1001;
-box-shadow:0 3px 8px rgba(0,0,0,0.2);
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
 transition:0.2s;
 }
 
@@ -32,11 +32,12 @@ left:0;
 top:0;
 width:230px;
 height:100%;
-background:#1f1f1f;
+background:#1f2937;
 color:white;
 padding:25px;
 padding-top:70px;
 display:none;
+box-shadow:4px 0 15px rgba(0,0,0,0.25);
 }
 
 /* MENÜ BAŞLIK */
@@ -54,9 +55,9 @@ width:100%;
 padding:12px;
 margin:10px 0;
 border:none;
-background:#333;
+background:#374151;
 color:white;
-border-radius:12px;
+border-radius:10px;
 cursor:pointer;
 font-size:15px;
 transition:0.2s;
@@ -68,47 +69,51 @@ transition:0.2s;
 
 #content{
 margin-left:60px;
-padding:25px;
+padding:30px;
 }
 
 /* INPUTLAR */
 
 input{
-padding:9px;
+padding:10px;
 font-size:15px;
-border-radius:8px;
-border:1px solid #ccc;
+border-radius:10px;
+border:1px solid #d1d5db;
 margin-right:6px;
 outline:none;
-}
-
-input:focus
-
-/* ANA BUTON (Grafiği Çiz) */
-
-button{
-background:#3b82f6;
-color:white;
-border:none;
-padding:12px 22px;
-font-size:16px;
-border-radius:12px;
-cursor:pointer;
-box-shadow:0 4px 10px rgba(0,0,0,0.15);
 transition:0.2s;
 }
 
-button:hover{
+input:focus{
+border-color:#3b82f6;
+box-shadow:0 0 4px rgba(59,130,246,0.4);
+}
+
+/* ANA BUTON (Grafiği Çiz) */
+
+#content button{
+background:#3b82f6;
+color:white;
+border:none;
+padding:12px 24px;
+font-size:16px;
+border-radius:12px;
+cursor:pointer;
+box-shadow:0 5px 12px rgba(0,0,0,0.15);
+transition:0.2s;
+}
+
+#content button:hover{
 background:#2563eb;
-transform:translateY(-1px);
+transform:translateY(-2px);
 }
 
 /* GRAFİK KUTUSU */
 
 #plot{
-margin-top:20px;
+margin-top:25px;
 background:white;
-padding:12px;
-border-radius:14px;
-box-shadow:0 4px 12px rgba(0,0,0,0.15);
+padding:15px;
+border-radius:16px;
+box-shadow:0 6px 18px rgba(0,0,0,0.15);
 }
