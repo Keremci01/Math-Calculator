@@ -74,7 +74,7 @@ margin-top:20px;
 
 <h3>Menü</h3>
 
-<button onclick="modeFunction()">Fonksiyon Grafiği</button> <button onclick="modeDerivative()">Türev Grafiği</button> <button onclick="modeIntegral()">İntegral Alanı</button>
+<button onclick="setMode('function')">Fonksiyon Grafiği</button> <button onclick="setMode('derivative')">Türev Grafiği</button> <button onclick="setMode('integral')">İntegral Alanı</button>
 
 </div>
 
@@ -102,50 +102,39 @@ function toggleMenu(){
 
 let m=document.getElementById("menu");
 
-if(m.style.display==="block"){
-m.style.display="none";
-}else{
-m.style.display="block";
-}
+m.style.display = m.style.display==="block" ? "none" : "block";
 
 }
 
-function modeFunction(){
+function setMode(m){
 
-mode="function";
-
-document.getElementById("title").innerHTML="Fonksiyon Grafiği";
-
-document.getElementById("a").style.display="none";
-document.getElementById("b").style.display="none";
+mode=m;
 
 toggleMenu();
 
-}
+if(mode==="function"){
 
-function modeDerivative(){
-
-mode="derivative";
-
-document.getElementById("title").innerHTML="Türev Grafiği";
-
+document.getElementById("title").innerText="Fonksiyon Grafiği";
 document.getElementById("a").style.display="none";
 document.getElementById("b").style.display="none";
 
-toggleMenu();
+}
+
+if(mode==="derivative"){
+
+document.getElementById("title").innerText="Türev Grafiği";
+document.getElementById("a").style.display="none";
+document.getElementById("b").style.display="none";
 
 }
 
-function modeIntegral(){
+if(mode==="integral"){
 
-mode="integral";
-
-document.getElementById("title").innerHTML="İntegral Alanı";
-
+document.getElementById("title").innerText="İntegral Alanı";
 document.getElementById("a").style.display="inline";
 document.getElementById("b").style.display="inline";
 
-toggleMenu();
+}
 
 }
 
@@ -160,9 +149,7 @@ target:"#plot",
 width:800,
 height:500,
 grid:true,
-data:[
-{fn:f}
-]
+data:[{fn:f}]
 });
 
 }
@@ -176,9 +163,7 @@ target:"#plot",
 width:800,
 height:500,
 grid:true,
-data:[
-{fn:d}
-]
+data:[{fn:d}]
 });
 
 }
@@ -220,6 +205,12 @@ color:"black"
 
 {
 fn:`${b}`,
+color:"black"
+},
+
+{
+fn:"0",
+range:[a,b],
 color:"black"
 }
 
