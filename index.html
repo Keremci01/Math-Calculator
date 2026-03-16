@@ -95,7 +95,6 @@ border:1px solid #444;
 <button onclick="downloadPNG()">PNG indir</button>
 
 <div id="plot"></div>
-
 <div id="result"></div>
 
 </div>
@@ -105,23 +104,17 @@ border:1px solid #444;
 let mode="function"
 
 function toggleMenu(){
-
 let m=document.getElementById("menu")
 m.style.display = m.style.display==="block" ? "none":"block"
-
 }
 
 function toggleGroup(id){
-
 let g=document.getElementById(id)
 g.style.display = g.style.display==="block" ? "none":"block"
-
 }
 
 function toggleDark(){
-
 document.body.classList.toggle("dark")
-
 }
 
 function hideInputs(){
@@ -165,8 +158,8 @@ mode=m
 hideInputs()
 clearInputs()
 
-document.getElementById("plot").innerHTML=""
-document.getElementById("result").innerHTML=""
+plot.innerHTML=""
+result.innerHTML=""
 
 if(m==="function"){
 title.innerText="Fonksiyon Grafiği"
@@ -176,8 +169,8 @@ if(m==="multi"){
 
 title.innerText="Çoklu Fonksiyon"
 
-document.getElementById("func2").style.display="inline"
-document.getElementById("func3").style.display="inline"
+func2.style.display="inline"
+func3.style.display="inline"
 
 }
 
@@ -185,11 +178,10 @@ if(m==="distance"){
 
 title.innerText="İki Nokta Mesafe"
 
-document.getElementById("x1").style.display="inline"
-document.getElementById("y1").style.display="inline"
-
-document.getElementById("x2").style.display="inline"
-document.getElementById("y2").style.display="inline"
+x1.style.display="inline"
+y1.style.display="inline"
+x2.style.display="inline"
+y2.style.display="inline"
 
 }
 
@@ -201,8 +193,8 @@ if(m==="integral"){
 
 title.innerText="İntegral Alanı"
 
-document.getElementById("a").style.display="inline"
-document.getElementById("b").style.display="inline"
+a.style.display="inline"
+b.style.display="inline"
 
 }
 
@@ -210,7 +202,7 @@ if(m==="tangent"){
 
 title.innerText="Teğet"
 
-document.getElementById("x0").style.display="inline"
+x0.style.display="inline"
 
 }
 
@@ -218,7 +210,7 @@ if(m==="limit"){
 
 title.innerText="Limit"
 
-document.getElementById("x0").style.display="inline"
+x0.style.display="inline"
 
 }
 
@@ -241,16 +233,11 @@ try{
 if(mode==="function"){
 
 functionPlot({
-
 target:"#plot",
 width:width,
 height:400,
 grid:true,
-
-data:[
-{fn:f,sampler:"builtIn"}
-]
-
+data:[{fn:f}]
 })
 
 }
@@ -259,52 +246,16 @@ if(mode==="multi"){
 
 let data=[]
 
-if(f!="") data.push({fn:f,sampler:"builtIn"})
-
-let f2=document.getElementById("func2").value
-let f3=document.getElementById("func3").value
-
-if(f2!="") data.push({fn:f2,sampler:"builtIn"})
-if(f3!="") data.push({fn:f3,sampler:"builtIn"})
+if(func.value!="") data.push({fn:func.value})
+if(func2.value!="") data.push({fn:func2.value})
+if(func3.value!="") data.push({fn:func3.value})
 
 functionPlot({
-
 target:"#plot",
 width:width,
 height:400,
 grid:true,
 data:data
-
-})
-
-}
-
-if(mode==="distance"){
-
-let x1=Number(document.getElementById("x1").value)
-let y1=Number(document.getElementById("y1").value)
-let x2=Number(document.getElementById("x2").value)
-let y2=Number(document.getElementById("y2").value)
-
-let d=Math.sqrt((x2-x1)**2+(y2-y1)**2)
-
-result.innerHTML="Mesafe = "+d
-
-functionPlot({
-
-target:"#plot",
-width:width,
-height:400,
-grid:true,
-
-data:[{
-
-points:[[x1,y1],[x2,y2]],
-fnType:"points",
-graphType:"scatter"
-
-}]
-
 })
 
 }
@@ -316,51 +267,47 @@ let d=math.derivative(f,"x").toString()
 result.innerHTML="f'(x) = "+d
 
 functionPlot({
-
 target:"#plot",
 width:width,
 height:400,
 grid:true,
-
 data:[
 {fn:f},
 {fn:d}
 ]
-
 })
 
 }
 
 if(mode==="integral"){
 
-let a=Number(document.getElementById("a").value)
-let b=Number(document.getElementById("b").value)
-
-result.innerHTML="Alan ["+a+","+b+"]"
+let aVal=Number(a.value)
+let bVal=Number(b.value)
 
 functionPlot({
-
 target:"#plot",
 width:width,
 height:400,
 grid:true,
-
 data:[
 {fn:f},
-{fn:f,range:[a,b],closed:true}
+{
+fn:f,
+range:[aVal,bVal],
+closed:true
+}
 ]
-
 })
 
 }
 
 if(mode==="tangent"){
 
-let x=Number(document.getElementById("x0").value)
+let x=Number(x0.value)
 
-let derivative=math.derivative(f,"x")
+let d=math.derivative(f,"x")
 
-let slope=derivative.evaluate({x:x})
+let slope=d.evaluate({x:x})
 
 let y=math.evaluate(f,{x:x})
 
@@ -369,24 +316,21 @@ let tangent=slope+"*(x-"+x+")+"+y
 result.innerHTML="Teğet: "+tangent
 
 functionPlot({
-
 target:"#plot",
 width:width,
 height:400,
 grid:true,
-
 data:[
 {fn:f},
 {fn:tangent}
 ]
-
 })
 
 }
 
 if(mode==="limit"){
 
-let x=Number(document.getElementById("x0").value)
+let x=Number(x0.value)
 
 let f1=math.evaluate(f,{x:x+0.00001})
 let f2=math.evaluate(f,{x:x-0.00001})
@@ -394,6 +338,33 @@ let f2=math.evaluate(f,{x:x-0.00001})
 let lim=(f1+f2)/2
 
 result.innerHTML="Limit ≈ "+lim
+
+}
+
+if(mode==="distance"){
+
+let x1v=Number(x1.value)
+let y1v=Number(y1.value)
+let x2v=Number(x2.value)
+let y2v=Number(y2.value)
+
+let d=Math.sqrt((x2v-x1v)**2+(y2v-y1v)**2)
+
+result.innerHTML="Mesafe = "+d
+
+functionPlot({
+target:"#plot",
+width:width,
+height:400,
+grid:true,
+data:[
+{
+points:[[x1v,y1v],[x2v,y2v]],
+fnType:"points",
+graphType:"scatter"
+}
+]
+})
 
 }
 
@@ -410,11 +381,8 @@ function downloadPNG(){
 let svg=document.querySelector("#plot svg")
 
 if(!svg){
-
 alert("Önce grafiği çiz")
-
 return
-
 }
 
 let rect=svg.getBoundingClientRect()
@@ -423,7 +391,6 @@ let width=rect.width
 let height=rect.height
 
 let serializer=new XMLSerializer()
-
 let source=serializer.serializeToString(svg)
 
 let img=new Image()
@@ -440,7 +407,6 @@ let ctx=canvas.getContext("2d")
 ctx.scale(3,3)
 
 ctx.fillStyle="white"
-
 ctx.fillRect(0,0,width,height)
 
 ctx.drawImage(img,0,0,width,height)
@@ -460,7 +426,6 @@ img.src="data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(source))
 }
 
 window.addEventListener("resize",draw)
-
 window.onload=draw
 
 </script>
