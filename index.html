@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -48,10 +47,9 @@
 <h2>AI Matematik Asistanı</h2>
 
 <input id="aiInput" placeholder="Matematik sorusu yaz">
-
 <button onclick="askAI()">Sor</button>
 
-<div id="aiAnswer" style="margin-top:20px;font-size:16px;"></div>
+<div id="aiAnswer" style="margin-top:20px"></div>
 
 </div>
 
@@ -60,11 +58,8 @@
 let mode="function";
 
 function toggleMenu(){
-
 let m=document.getElementById("menu");
-
 m.style.display = m.style.display==="block" ? "none" : "block";
-
 }
 
 function setMode(m){
@@ -120,7 +115,7 @@ if(mode==="function"){
 functionPlot({
 target:"#plot",
 width:width,
-height:500,
+height:400,
 grid:true,
 data:[
 {fn:f}
@@ -136,7 +131,7 @@ let d=math.derivative(f,"x").toString();
 functionPlot({
 target:"#plot",
 width:width,
-height:500,
+height:400,
 grid:true,
 data:[
 {fn:d}
@@ -154,7 +149,7 @@ functionPlot({
 
 target:"#plot",
 width:width,
-height:500,
+height:400,
 grid:true,
 
 data:[
@@ -180,7 +175,7 @@ functionPlot({
 
 target:"#plot",
 width:width,
-height:500,
+height:400,
 grid:true,
 
 data:[
@@ -201,7 +196,7 @@ functionPlot({
 
 target:"#plot",
 width:width,
-height:500,
+height:400,
 grid:true,
 
 data:[
@@ -214,9 +209,7 @@ data:[
 }
 
 }catch(e){
-
 console.log(e);
-
 }
 
 }
@@ -237,24 +230,37 @@ headers:{
 "Content-Type":"application/json"
 },
 body:JSON.stringify({
-contents:[{
-parts:[{
+contents:[
+{
+parts:[
+{
 text:"Bir matematik öğretmeni gibi adım adım çöz ve neden yaptığını açıkla: "+q
-}]
-}]
+}
+]
+}
+]
 })
 });
 
-let data = await response.json();
+let data=await response.json();
 
-let ans = data.candidates[0].content.parts[0].text;
+console.log(data);
 
-document.getElementById("aiAnswer").innerText = ans;
+if(data.candidates){
 
-}
-catch(e){
+let ans=data.candidates[0].content.parts[0].text;
+
+document.getElementById("aiAnswer").innerText=ans;
+
+}else{
 
 document.getElementById("aiAnswer").innerText="AI cevap veremedi.";
+
+}
+
+}catch(e){
+
+document.getElementById("aiAnswer").innerText="Bağlantı hatası.";
 
 console.log(e);
 
