@@ -230,6 +230,7 @@ target:"#plot",
 width:width,
 height:400,
 grid:true,
+tip:{renderer:()=>''},
 data:[{fn:f}]
 })
 
@@ -247,6 +248,7 @@ target:"#plot",
 width:width,
 height:400,
 grid:true,
+tip:{renderer:()=>''},
 data:data
 })
 
@@ -263,6 +265,7 @@ target:"#plot",
 width:width,
 height:400,
 grid:true,
+tip:{renderer:()=>''},
 data:[
 {fn:f},
 {fn:d}
@@ -282,6 +285,7 @@ target:"#plot",
 width:width,
 height:400,
 grid:true,
+tip:{renderer:()=>''},
 
 data:[
 
@@ -294,15 +298,8 @@ closed:true,
 color:"rgba(0,120,255,0.3)"
 },
 
-{
-fn:"x="+aVal,
-color:"red"
-},
-
-{
-fn:"x="+bVal,
-color:"red"
-},
+{fn:"x="+aVal,color:"red"},
+{fn:"x="+bVal,color:"red"},
 
 {
 points:[
@@ -338,6 +335,7 @@ target:"#plot",
 width:width,
 height:400,
 grid:true,
+tip:{renderer:()=>''},
 data:[
 {fn:f},
 {fn:tangent}
@@ -375,6 +373,7 @@ target:"#plot",
 width:width,
 height:400,
 grid:true,
+tip:{renderer:()=>''},
 data:[
 {
 points:[[x1v,y1v],[x2v,y2v]],
