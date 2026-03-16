@@ -1,14 +1,9 @@
-```css
-/* SAYFA GENEL */
-
 body{
 font-family:'Segoe UI', Arial, sans-serif;
 margin:0;
 background:linear-gradient(135deg,#eef2ff,#e0f2fe);
 color:#1f2937;
 }
-
-/* HAMBURGER */
 
 #hamburger{
 font-size:26px;
@@ -28,8 +23,6 @@ transition:0.2s;
 transform:scale(1.1);
 }
 
-/* SOL MENÜ */
-
 #menu{
 position:fixed;
 left:0;
@@ -44,20 +37,16 @@ display:none;
 box-shadow:4px 0 20px rgba(0,0,0,0.4);
 }
 
-/* MENÜ BAŞLIK */
-
 #menu h3{
 margin-top:0;
 margin-bottom:20px;
 font-size:22px;
 }
 
-/* MENÜ BUTONLARI */
-
 #menu button{
 width:100%;
 padding:12px;
-margin:10px 0;
+margin:8px 0;
 background:#1f2937;
 color:white;
 border:none;
@@ -72,21 +61,20 @@ background:#2563eb;
 transform:translateX(5px);
 }
 
-/* ANA İÇERİK */
+.submenu{
+display:none;
+margin-left:10px;
+}
 
 #content{
 margin-left:60px;
 padding:40px;
 }
 
-/* BAŞLIK */
-
 h2{
 font-size:28px;
 margin-bottom:20px;
 }
-
-/* INPUTLAR */
 
 input{
 padding:10px 14px;
@@ -102,8 +90,6 @@ input:focus{
 border-color:#3b82f6;
 box-shadow:0 0 6px rgba(59,130,246,0.4);
 }
-
-/* ANA BUTON */
 
 #content button{
 background:linear-gradient(135deg,#2563eb,#1d4ed8);
@@ -122,8 +108,6 @@ background:linear-gradient(135deg,#1d4ed8,#1e40af);
 transform:translateY(-2px);
 }
 
-/* GRAFİK KUTUSU */
-
 #plot{
 margin-top:30px;
 background:white;
@@ -132,4 +116,3 @@ border-radius:16px;
 box-shadow:0 10px 30px rgba(0,0,0,0.2);
 overflow:hidden;
 }
-```
