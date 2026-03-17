@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-
 <html>
 <head>
 
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- EKLENDİ -->
+
 <title>Math Calculator</title>
 
 <link rel="stylesheet" href="index.css">
@@ -32,6 +33,38 @@ border:1px solid #444;
 background:#1e1e1e;
 color:white;
 border:1px solid #444;
+}
+
+/* 📱 MOBİL EKLENDİ */
+@media (max-width: 768px){
+
+#content{
+margin-left:0;
+padding:20px;
+}
+
+#menu{
+width:100%;
+}
+
+input{
+width:100%;
+margin:8px 0;
+}
+
+#content button{
+width:100%;
+margin-top:10px;
+}
+
+#plot{
+padding:10px;
+}
+
+#calculator{
+max-width:100%;
+}
+
 }
 
 </style>
@@ -279,7 +312,7 @@ function draw(){
 plot.innerHTML=""
 result.innerHTML=""
 
-let width=document.getElementById("plot").offsetWidth
+let width=document.getElementById("plot").clientWidth || 400 // FIX
 let f=func.value
 
 try{
@@ -338,37 +371,21 @@ let aVal=Number(a.value)
 let bVal=Number(b.value)
 
 functionPlot({
-
 target:"#plot",
 width:width,
 height:400,
 grid:true,
-
 data:[
-
 {fn:f},
-
 {
 fn:f,
 range:[aVal,bVal],
 closed:true,
 color:"rgba(0,120,255,0.3)"
 },
-
 {fn:"x="+aVal,color:"red"},
-{fn:"x="+bVal,color:"red"},
-
-{
-points:[
-[aVal,math.evaluate(f,{x:aVal})],
-[bVal,math.evaluate(f,{x:bVal})]
-],
-fnType:"points",
-graphType:"scatter"
-}
-
+{fn:"x="+bVal,color:"red"}
 ]
-
 })
 
 }
@@ -420,20 +437,36 @@ let y1v=Number(y1.value)
 let x2v=Number(x2.value)
 let y2v=Number(y2.value)
 
-let d=Math.sqrt((x2v-x1v)**2+(y2v-y1v)**2)
+if(isNaN(x1v)||isNaN(y1v)||isNaN(x2v)||isNaN(y2v)){
+result.innerHTML="Tüm değerleri gir kanka"
+return
+}
 
-result.innerHTML="Mesafe = "+d
+let d=Math.sqrt((x2v-x1v)**2+(y2v-y1v)**2)
+result.innerHTML="Mesafe = "+d.toFixed(2)
+
+let minX=Math.min(x1v,x2v)-2
+let maxX=Math.max(x1v,x2v)+2
+let minY=Math.min(y1v,y2v)-2
+let maxY=Math.max(y1v,y2v)+2
 
 functionPlot({
 target:"#plot",
 width:width,
 height:400,
 grid:true,
+xAxis:{domain:[minX,maxX]},
+yAxis:{domain:[minY,maxY]},
 data:[
 {
 points:[[x1v,y1v],[x2v,y2v]],
 fnType:"points",
 graphType:"scatter"
+},
+{
+points:[[x1v,y1v],[x2v,y2v]],
+fnType:"points",
+graphType:"polyline"
 }
 ]
 })
@@ -441,27 +474,27 @@ graphType:"scatter"
 }
 
 }catch(e){
-
 result.innerHTML="Hata: "+e.message
-
 }
 
 }
+
+// 🔥 CANLI GRAFİK
+func.addEventListener("input", draw)
+func2.addEventListener("input", draw)
+func3.addEventListener("input", draw)
 
 function calc(val){
 document.getElementById("calcDisplay").value+=val
 }
 
 function calculate(){
-
 let val=document.getElementById("calcDisplay").value
-
 try{
 document.getElementById("calcDisplay").value=math.evaluate(val)
 }catch{
 document.getElementById("calcDisplay").value="Hata"
 }
-
 }
 
 function clearCalc(){
