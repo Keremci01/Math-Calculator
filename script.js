@@ -60,12 +60,13 @@ document.getElementById("plot").style.display="block"
 document.getElementById("graphButtons").style.display="block"
 func.style.display="inline"
 
+/* 🔥 FIX: BUTON KONTROL */
 let btn=document.getElementById("intersectBtn")
 if(btn){
 btn.style.display = (m==="multi") ? "inline-block" : "none"
 }
 
-/* TEXT FIX */
+/* 🔥 TEXT FIX */
 if(m==="function"){
 title.innerText="Fonksiyon Grafiği"
 }
@@ -112,14 +113,11 @@ graphButtons.style.display="none"
 func.style.display="none"
 }
 
-draw() // 🔥 MODE değişince otomatik çiz
 }
 
 /* ================= DRAW ================= */
 
 function draw(){
-
-if(!plot) return
 
 plot.innerHTML=""
 result.innerHTML=""
@@ -132,7 +130,7 @@ try{
 let config={
 target:"#plot",
 width:plot.clientWidth,
-height:500, // 🔥 büyüttüm
+height:400,
 grid:true,
 zoom:true,
 pan:true,
@@ -217,6 +215,14 @@ function setupInteractions(){
 let raf = null;
 let rect = plot.getBoundingClientRect();
 
+plot.onmouseenter = function(){
+rect = plot.getBoundingClientRect()
+}
+
+plot.onwheel = function(){
+rect = plot.getBoundingClientRect()
+}
+
 plot.onmousemove = function(e){
 
 if(!currentPlot || !currentPlot.meta) return
@@ -230,6 +236,32 @@ let y = currentPlot.meta.yScale.invert(e.clientY - rect.top)
 coords.innerText = `x: ${x.toFixed(2)} | y: ${y.toFixed(2)}`
 
 raf = null
+})
+}
+
+plot.onclick=function(e){
+
+let rect=plot.getBoundingClientRect()
+
+let x=currentPlot.meta.xScale.invert(e.clientX-rect.left)
+let y=currentPlot.meta.yScale.invert(e.clientY-rect.top)
+
+functionPlot({
+target:"#plot",
+width:plot.clientWidth,
+height:400,
+grid:true,
+zoom:true,
+pan:true,
+data:[
+...currentPlot.options.data,
+{
+points:[[x,y]],
+fnType:"points",
+graphType:"scatter",
+color:"red"
+}
+]
 })
 }
 
@@ -271,7 +303,7 @@ rows+=`<tr>
 functionPlot({
 target:"#plot",
 width:plot.clientWidth,
-height:500,
+height:400,
 grid:true,
 zoom:true,
 pan:true,
@@ -308,27 +340,24 @@ function debounce(f,d){
 let t;return()=>{clearTimeout(t);t=setTimeout(f,d)}
 }
 
-/* 🔥 FIX AUTO DRAW (EN KRİTİK) */
-window.addEventListener("load", ()=>{
-
-let ids=["func","func2","func3","x1","y1","x2","y2","a","b","x0"]
-
-ids.forEach(id=>{
-let el=document.getElementById(id)
+/* 🔥 AUTO DRAW TÜM INPUTLAR */
+[func,func2,func3,x1,y1,x2,y2,a,b,x0].forEach(el=>{
 if(el){
 el.addEventListener("input", debounce(draw,200))
 }
 })
 
-setTimeout(draw,100)
-
-})
+window.onload=()=>setTimeout(draw,100)
 
 /* ================= PNG ================= */
 
 function downloadPNG(){
 const svg = document.querySelector("#plot svg");
-if(!svg){ alert("Önce grafik çiz!"); return; }
+
+if(!svg){
+alert("Önce grafik çiz!");
+return;
+}
 
 const serializer = new XMLSerializer();
 const source = serializer.serializeToString(svg);
@@ -343,8 +372,10 @@ canvas.width = svg.clientWidth;
 canvas.height = svg.clientHeight;
 
 const ctx = canvas.getContext("2d");
+
 ctx.fillStyle = "white";
 ctx.fillRect(0,0,canvas.width,canvas.height);
+
 ctx.drawImage(img,0,0);
 
 URL.revokeObjectURL(url);
@@ -357,3 +388,18 @@ link.click();
 
 img.src = url;
 }
+
+/* ================= UI ================= */
+
+function animateUI(){
+document.querySelectorAll(".fade-slide").forEach((el,i)=>{
+setTimeout(()=>{
+el.classList.add("active")
+}, i*100)
+})
+}
+
+window.addEventListener("load", function(){
+animateUI();
+draw();
+});
