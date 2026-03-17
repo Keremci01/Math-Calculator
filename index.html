@@ -35,7 +35,7 @@ color:white;
 border:1px solid #444;
 }
 
-/* 📱 MOBİL EKLENDİ */
+/* 📱 MOBİL */
 @media (max-width: 768px){
 
 #content{
@@ -175,12 +175,30 @@ let mode="function"
 
 function toggleMenu(){
 let m=document.getElementById("menu")
-m.style.display = m.style.display==="block" ? "none":"block"
+
+if(m.style.display==="block"){
+m.style.display="none"
+}else{
+m.style.display="block"
+}
+
 }
 
 function toggleGroup(id){
+
+// 🔥 hepsini kapat (FIX)
+document.querySelectorAll("#menu div").forEach(el=>{
+if(el.id.includes("Group")) el.style.display="none"
+})
+
 let g=document.getElementById(id)
-g.style.display = g.style.display==="block" ? "none":"block"
+
+if(g.style.display==="block"){
+g.style.display="none"
+}else{
+g.style.display="block"
+}
+
 }
 
 function toggleDark(){
@@ -312,7 +330,7 @@ function draw(){
 plot.innerHTML=""
 result.innerHTML=""
 
-let width=document.getElementById("plot").clientWidth || 400 // FIX
+let width=document.getElementById("plot").clientWidth || 400
 let f=func.value
 
 try{
@@ -483,6 +501,18 @@ result.innerHTML="Hata: "+e.message
 func.addEventListener("input", draw)
 func2.addEventListener("input", draw)
 func3.addEventListener("input", draw)
+
+// 🔥 MENU DIŞI CLICK FIX
+document.addEventListener("click",function(e){
+
+let menu=document.getElementById("menu")
+let hamburger=document.getElementById("hamburger")
+
+if(!menu.contains(e.target) && !hamburger.contains(e.target)){
+menu.style.display="none"
+}
+
+})
 
 function calc(val){
 document.getElementById("calcDisplay").value+=val
