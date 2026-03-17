@@ -134,15 +134,5 @@ overflow:hidden;
 }
 
 #coords{
-margin-top:10px;
-font-weight:600;
-
-color:#2563eb; /* senin ana mavi */
-
-font-size:15px;
-
-background:none;
-box-shadow:none;
-padding:0;
-border-radius:0;
+color:#2563eb !important;
 }
