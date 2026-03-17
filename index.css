@@ -164,3 +164,23 @@ border-radius:0 !important;
   pointer-events:auto;
   transform:translateX(0);
 }
+
+#menu button{
+transition:0.2s;
+}
+
+#menu button:hover{
+background:#2563eb !important;
+color:white;
+transform:translateX(5px);
+}
+
+#menu button{
+transition: all 0.2s ease;
+}
+
+#menu button:hover{
+background:#2563eb !important;
+color:white !important;
+transform:translateX(5px);
+}
