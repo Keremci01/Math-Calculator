@@ -143,3 +143,17 @@ box-shadow:none !important;
 padding:0 !important;
 border-radius:0 !important;
 }
+
+#menu{
+  display:block;
+  opacity:0;
+  pointer-events:none;
+  transform:translateX(-30px);
+  transition: all 0.3s ease;
+}
+
+#menu.active{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateX(0);
+}
