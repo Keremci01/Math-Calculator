@@ -136,3 +136,10 @@ overflow:hidden;
 #coords{
 color:#2563eb !important;
 }
+
+#coords{
+background:none !important;
+box-shadow:none !important;
+padding:0 !important;
+border-radius:0 !important;
+}
