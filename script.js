@@ -396,6 +396,7 @@ el.classList.add("active")
 })
 }
 
-window.onload = function(){
-animateUI()
-}
+window.addEventListener("load", function(){
+  animateUI();
+  draw();
+});
