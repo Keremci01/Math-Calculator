@@ -132,3 +132,28 @@ border-radius:16px;
 box-shadow:0 10px 30px rgba(0,0,0,0.2);
 overflow:hidden;
 }
+/* COORDS (X Y GÖSTERGE) */
+
+#coords{
+margin-top:12px;
+font-weight:600;
+
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:white;
+
+padding:8px 14px;
+border-radius:12px;
+
+box-shadow:0 6px 16px rgba(0,0,0,0.25);
+
+display:inline-block;
+font-size:14px;
+
+transition:0.25s;
+}
+
+/* hover efekti (butonlarla aynı hissiyat) */
+#coords:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+}
