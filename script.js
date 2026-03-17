@@ -387,3 +387,13 @@ function downloadPNG(){
 
   img.src = url;
 }
+
+function animateUI(){
+document.querySelectorAll(".fade-slide").forEach((el,i)=>{
+setTimeout(()=>{
+el.classList.add("active")
+}, i*100)
+})
+}
+
+window.addEventListener("load", animateUI)
