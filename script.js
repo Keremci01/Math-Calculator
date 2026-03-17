@@ -210,18 +210,32 @@ result.innerHTML=e.message
 
 function setupInteractions(){
 
-plot.onmousemove=function(e){
+let raf = null;
+let rect = plot.getBoundingClientRect();
 
-if(!currentPlot) return
-
-let rect=plot.getBoundingClientRect()
-
-let x=currentPlot.meta.xScale.invert(e.clientX-rect.left)
-let y=currentPlot.meta.yScale.invert(e.clientY-rect.top)
-
-coords.innerText=`x: ${x.toFixed(2)} | y: ${y.toFixed(2)}`
+plot.onmouseenter = function(){
+rect = plot.getBoundingClientRect()
 }
 
+plot.onwheel = function(){
+rect = plot.getBoundingClientRect()
+}
+
+plot.onmousemove = function(e){
+
+if(!currentPlot || !currentPlot.meta) return
+if(raf) return
+
+raf = requestAnimationFrame(()=>{
+
+let x = currentPlot.meta.xScale.invert(e.clientX - rect.left)
+let y = currentPlot.meta.yScale.invert(e.clientY - rect.top)
+
+coords.innerText = `x: ${x.toFixed(2)} | y: ${y.toFixed(2)}`
+
+raf = null
+})
+}
 plot.onclick=function(e){
 
 let rect=plot.getBoundingClientRect()
