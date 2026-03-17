@@ -7,8 +7,13 @@ let currentPlot=null
 /* ================= MENU ================= */
 
 function toggleMenu(){
-let m=document.getElementById("menu")
-m.style.display = m.style.display==="block"?"none":"block"
+let m = document.getElementById("menu")
+
+if(m.classList.contains("active")){
+m.classList.remove("active")
+}else{
+m.classList.add("active")
+}
 }
 
 function toggleGroup(id){
@@ -293,7 +298,7 @@ rows+=`<tr>
 <td>${f1} = ${f2}</td>
 </tr>`
 }
-
+ 
 }catch{}
 
 }
