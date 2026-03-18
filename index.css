@@ -25,7 +25,7 @@ transition:0.2s;
 transform:scale(1.1);
 }
 
-/* 🔥 MENÜ (STABİL ESKİ SİSTEM) */
+/* 🔥 MENÜ */
 #menu{
 position:fixed;
 left:0;
@@ -36,7 +36,7 @@ background:#111827;
 color:white;
 padding:25px;
 padding-top:80px;
-display:none; /* 🔥 BUG YOK */
+display:none;
 box-shadow:4px 0 20px rgba(0,0,0,0.4);
 z-index:1000;
 }
@@ -59,14 +59,15 @@ border:none;
 border-radius:10px;
 cursor:pointer;
 font-size:15px;
+font-weight:500; /* 🔥 sabit font */
 transition: all 0.2s ease;
 }
 
-/* 🔥 HOVER (GRAFİĞİ ÇİZ İLE AYNI) */
+/* 🔥 HOVER FIX (ARTIK BÜYÜME YOK) */
 #menu button:hover{
 background:linear-gradient(135deg,#2563eb,#1d4ed8);
 color:white;
-transform:translateX(5px) scale(1.05);
+transform:translateX(5px); /* sadece kayma */
 }
 
 /* ANA İÇERİK */
@@ -133,14 +134,4 @@ background:none !important;
 box-shadow:none !important;
 padding:0 !important;
 border-radius:0 !important;
-}
-
-#menu button{
-transition: all 0.2s ease;
-}
-
-#menu button:hover{
-background:linear-gradient(135deg,#2563eb,#1d4ed8) !important;
-color:white !important;
-transform:translateX(5px) scale(1.05);
 }
