@@ -216,6 +216,7 @@ let el = document.getElementById(id);
 el.style.display = (el.style.display === "none") ? "block" : "none";
 }
 
+document.getElementById("plot").style.display="block";
 /* MODE */
 function setMode(mode){
 
@@ -262,7 +263,7 @@ title.innerText="Limit";
 if(mode==="calculator"){
 title.innerText="Hesap Makinesi";
 document.getElementById("calculator").style.display="block";
-}
+document.getElementById("plot").style.display="none"; // 👈 EKLENDİ
 }
 
 /* GRAPH */
@@ -287,13 +288,30 @@ document.body.classList.toggle("dark");
 function calc(v){document.getElementById("calcDisplay").value+=v;}
 function calculate(){
 try{
-document.getElementById("calcDisplay").value=eval(document.getElementById("calcDisplay").value);
-}catch{alert("Hata");}
+let exp = document.getElementById("calcDisplay").value
+.replace(/÷/g,"/")
+.replace(/×/g,"*")
+.replace(/−/g,"-")
+
+document.getElementById("calcDisplay").value = math.evaluate(exp)
+}catch{
+alert("Hatalı işlem")
+}
 }
 function clearCalc(){document.getElementById("calcDisplay").value="";}
 
 /* AUTO */
-window.onload=draw;
+window.onload = () => {
+
+draw();
+
+document.getElementById("calcDisplay").addEventListener("keydown", function(e){
+if(e.key === "Enter"){
+calculate();
+}
+});
+
+}
 
 </script>
 
