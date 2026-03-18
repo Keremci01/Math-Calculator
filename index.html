@@ -72,7 +72,6 @@ cursor:pointer;
 transition:0.2s;
 }
 
-/* 🔥 HOVER FIX */
 #menu button:hover{
 background:linear-gradient(135deg,#2563eb,#1d4ed8);
 transform:translateX(5px) scale(1.05);
@@ -126,7 +125,6 @@ box-shadow:0 10px 30px rgba(0,0,0,0.2);
 <h3>Menü</h3>
 
 <button onclick="toggleGroup('funcGroup')">Fonksiyonlar ▼</button>
-
 <div id="funcGroup" style="display:none">
 <button onclick="setMode('function')">Fonksiyon</button>
 <button onclick="setMode('multi')">Çoklu</button>
@@ -134,7 +132,6 @@ box-shadow:0 10px 30px rgba(0,0,0,0.2);
 </div>
 
 <button onclick="toggleGroup('analysisGroup')">Analiz ▼</button>
-
 <div id="analysisGroup" style="display:none">
 <button onclick="setMode('derivative')">Türev</button>
 <button onclick="setMode('integral')">İntegral</button>
@@ -170,7 +167,6 @@ box-shadow:0 10px 30px rgba(0,0,0,0.2);
 <button onclick="draw()">Grafiği Çiz</button>
 
 <div id="plot"></div>
-
 <div id="result"></div>
 
 <!-- CALCULATOR -->
@@ -216,12 +212,12 @@ let el = document.getElementById(id);
 el.style.display = (el.style.display === "none") ? "block" : "none";
 }
 
-document.getElementById("plot").style.display="block";
 /* MODE */
 function setMode(mode){
 
 document.querySelectorAll("input").forEach(i=>i.style.display="none");
 document.getElementById("calculator").style.display="none";
+document.getElementById("plot").style.display="block";
 
 let title = document.getElementById("title");
 
@@ -263,7 +259,9 @@ title.innerText="Limit";
 if(mode==="calculator"){
 title.innerText="Hesap Makinesi";
 document.getElementById("calculator").style.display="block";
-document.getElementById("plot").style.display="none"; // 👈 EKLENDİ
+document.getElementById("plot").style.display="none";
+}
+
 }
 
 /* GRAPH */
@@ -286,23 +284,26 @@ document.body.classList.toggle("dark");
 
 /* CALC */
 function calc(v){document.getElementById("calcDisplay").value+=v;}
+
 function calculate(){
 try{
 let exp = document.getElementById("calcDisplay").value
 .replace(/÷/g,"/")
 .replace(/×/g,"*")
-.replace(/−/g,"-")
+.replace(/−/g,"-");
 
-document.getElementById("calcDisplay").value = math.evaluate(exp)
+document.getElementById("calcDisplay").value = math.evaluate(exp);
 }catch{
-alert("Hatalı işlem")
+alert("Hatalı işlem");
 }
 }
-function clearCalc(){document.getElementById("calcDisplay").value="";}
+
+function clearCalc(){
+document.getElementById("calcDisplay").value="";
+}
 
 /* AUTO */
 window.onload = () => {
-
 draw();
 
 document.getElementById("calcDisplay").addEventListener("keydown", function(e){
@@ -310,7 +311,6 @@ if(e.key === "Enter"){
 calculate();
 }
 });
-
 }
 
 </script>
