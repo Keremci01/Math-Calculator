@@ -1,5 +1,29 @@
 /* ================= GLOBAL ================= */
 
+// 🔥 ELEMENT FIX (EN ÖNEMLİ)
+const func = document.getElementById("func");
+const func2 = document.getElementById("func2");
+const func3 = document.getElementById("func3");
+
+const a = document.getElementById("a");
+const b = document.getElementById("b");
+const x0 = document.getElementById("x0");
+
+const x1 = document.getElementById("x1");
+const y1 = document.getElementById("y1");
+const x2 = document.getElementById("x2");
+const y2 = document.getElementById("y2");
+
+const plot = document.getElementById("plot");
+const result = document.getElementById("result");
+const tableContainer = document.getElementById("tableContainer");
+
+const title = document.getElementById("title");
+const calculator = document.getElementById("calculator");
+const graphButtons = document.getElementById("graphButtons");
+const coords = document.getElementById("coords");
+const calcDisplay = document.getElementById("calcDisplay");
+
 let mode="function"
 let currentPlot=null
 
@@ -55,18 +79,19 @@ plot.innerHTML=""
 result.innerHTML=""
 tableContainer.innerHTML=""
 
-document.getElementById("calculator").style.display="none"
-document.getElementById("plot").style.display="block"
-document.getElementById("graphButtons").style.display="block"
+calculator.style.display="none"
+plot.style.display="block"
+graphButtons.style.display="block"
 func.style.display="inline"
 
-/* 🔥 FIX: BUTON KONTROL */
+/* BUTON */
 let btn=document.getElementById("intersectBtn")
 if(btn){
 btn.style.display = (m==="multi") ? "inline-block" : "none"
 }
 
-/* 🔥 TEXT FIX */
+/* TEXT */
+
 if(m==="function"){
 title.innerText="Fonksiyon Grafiği"
 }
@@ -127,6 +152,12 @@ let f=func.value
 
 try{
 
+// 🔥 boş fonksiyon fix
+if(!f && mode!=="distance" && mode!=="calculator"){
+result.innerHTML="Fonksiyon gir!"
+return
+}
+
 let config={
 target:"#plot",
 width:plot.clientWidth,
@@ -138,15 +169,16 @@ data:[]
 }
 
 if(mode==="function"){
-config.data=[{fn:f}]
+config.data=[{fn:f, color:"blue"}]
 }
 
 if(mode==="multi"){
 
-let data=[{fn:f}]
+let data=[]
 
-if(func2.value) data.push({fn:func2.value})
-if(func3.value) data.push({fn:func3.value})
+if(f) data.push({fn:f, color:"blue"})
+if(func2.value) data.push({fn:func2.value, color:"red"})
+if(func3.value) data.push({fn:func3.value, color:"green"})
 
 config.data=data
 }
@@ -215,14 +247,6 @@ function setupInteractions(){
 let raf = null;
 let rect = plot.getBoundingClientRect();
 
-plot.onmouseenter = function(){
-rect = plot.getBoundingClientRect()
-}
-
-plot.onwheel = function(){
-rect = plot.getBoundingClientRect()
-}
-
 plot.onmousemove = function(e){
 
 if(!currentPlot || !currentPlot.meta) return
@@ -239,93 +263,6 @@ raf = null
 })
 }
 
-plot.onclick=function(e){
-
-let rect=plot.getBoundingClientRect()
-
-let x=currentPlot.meta.xScale.invert(e.clientX-rect.left)
-let y=currentPlot.meta.yScale.invert(e.clientY-rect.top)
-
-functionPlot({
-target:"#plot",
-width:plot.clientWidth,
-height:400,
-grid:true,
-zoom:true,
-pan:true,
-data:[
-...currentPlot.options.data,
-{
-points:[[x,y]],
-fnType:"points",
-graphType:"scatter",
-color:"red"
-}
-]
-})
-}
-
-}
-
-/* ================= INTERSECTION ================= */
-
-function findIntersections(){
-
-let f1=func.value
-let f2=func2.value
-
-let pts=[]
-let rows=""
-
-for(let i=-50;i<=50;i+=0.1){
-
-try{
-let y1=math.evaluate(f1,{x:i})
-let y2=math.evaluate(f2,{x:i})
-
-if(Math.abs(y1-y2)<0.15){
-
-let x=i.toFixed(2)
-let y=y1.toFixed(2)
-
-pts.push([Number(x),Number(y)])
-
-rows+=`<tr>
-<td>${x}</td>
-<td>${y}</td>
-<td>${f1} = ${f2}</td>
-</tr>`
-}
-}catch{}
-
-}
-
-functionPlot({
-target:"#plot",
-width:plot.clientWidth,
-height:400,
-grid:true,
-zoom:true,
-pan:true,
-data:[
-{fn:f1},
-{fn:f2},
-{points:pts,fnType:"points",graphType:"scatter",color:"red"}
-]
-})
-
-tableContainer.innerHTML=`
-<h3>Kesişim Tablosu</h3>
-<table style="width:100%;border-collapse:collapse;">
-<tr style="background:#2563eb;color:white;">
-<th>X</th><th>Y</th><th>Durum</th>
-</tr>
-${rows}
-</table>
-`
-
-result.innerHTML="Toplam kesişim: "+pts.length
-
 }
 
 /* ================= CALC ================= */
@@ -334,13 +271,12 @@ function calc(v){calcDisplay.value+=v}
 function calculate(){calcDisplay.value=math.evaluate(calcDisplay.value)}
 function clearCalc(){calcDisplay.value=""}
 
-/* ================= PERF ================= */
+/* ================= AUTO DRAW ================= */
 
 function debounce(f,d){
 let t;return()=>{clearTimeout(t);t=setTimeout(f,d)}
 }
 
-/* 🔥 AUTO DRAW TÜM INPUTLAR */
 [func,func2,func3,x1,y1,x2,y2,a,b,x0].forEach(el=>{
 if(el){
 el.addEventListener("input", debounce(draw,200))
@@ -348,58 +284,3 @@ el.addEventListener("input", debounce(draw,200))
 })
 
 window.onload=()=>setTimeout(draw,100)
-
-/* ================= PNG ================= */
-
-function downloadPNG(){
-const svg = document.querySelector("#plot svg");
-
-if(!svg){
-alert("Önce grafik çiz!");
-return;
-}
-
-const serializer = new XMLSerializer();
-const source = serializer.serializeToString(svg);
-
-const img = new Image();
-const svgBlob = new Blob([source], {type:"image/svg+xml;charset=utf-8"});
-const url = URL.createObjectURL(svgBlob);
-
-img.onload = function(){
-const canvas = document.createElement("canvas");
-canvas.width = svg.clientWidth;
-canvas.height = svg.clientHeight;
-
-const ctx = canvas.getContext("2d");
-
-ctx.fillStyle = "white";
-ctx.fillRect(0,0,canvas.width,canvas.height);
-
-ctx.drawImage(img,0,0);
-
-URL.revokeObjectURL(url);
-
-const link = document.createElement("a");
-link.download = "grafik.png";
-link.href = canvas.toDataURL("image/png");
-link.click();
-};
-
-img.src = url;
-}
-
-/* ================= UI ================= */
-
-function animateUI(){
-document.querySelectorAll(".fade-slide").forEach((el,i)=>{
-setTimeout(()=>{
-el.classList.add("active")
-}, i*100)
-})
-}
-
-window.addEventListener("load", function(){
-animateUI();
-draw();
-});
