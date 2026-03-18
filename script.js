@@ -1,396 +1,405 @@
 /* ================= GLOBAL ================= */
 
-let mode = "function";
-let currentPlot = null;
+let mode="function"
+let currentPlot=null
 
 /* ================= MENU ================= */
 
 function toggleMenu(){
-  let m = document.getElementById("menu");
-  m.classList.toggle("active");
+let m = document.getElementById("menu")
+m.classList.toggle("active")
 }
 
 function toggleGroup(id){
-  let g = document.getElementById(id);
 
-  if(g.style.display === "block"){
-    g.style.display = "none";
-    return;
-  }
+let g=document.getElementById(id)
 
-  document.querySelectorAll("#menu div").forEach(el=>{
-    if(el.id.includes("Group")) el.style.display = "none";
-  });
+if(g.style.display==="block"){
+g.style.display="none"
+return
+}
 
-  g.style.display = "block";
+document.querySelectorAll("#menu div").forEach(el=>{
+if(el.id.includes("Group")) el.style.display="none"
+})
+
+g.style.display="block"
 }
 
 function toggleDark(){
-  document.body.classList.toggle("dark");
+document.body.classList.toggle("dark")
 }
 
 /* ================= MODE ================= */
 
 function hideInputs(){
-  func2.style.display = "none";
-  func3.style.display = "none";
-  a.style.display = "none";
-  b.style.display = "none";
-  x0.style.display = "none";
-  x1.style.display = "none";
-  y1.style.display = "none";
-  x2.style.display = "none";
-  y2.style.display = "none";
+
+func2.style.display="none"
+func3.style.display="none"
+a.style.display="none"
+b.style.display="none"
+x0.style.display="none"
+x1.style.display="none"
+y1.style.display="none"
+x2.style.display="none"
+y2.style.display="none"
+
 }
 
 function setMode(m){
-  mode = m;
 
-  hideInputs();
-  plot.innerHTML = "";
-  result.innerHTML = "";
-  tableContainer.innerHTML = "";
+mode=m
 
-  document.getElementById("calculator").style.display = "none";
-  document.getElementById("plot").style.display = "block";
-  document.getElementById("graphButtons").style.display = "block";
-  func.style.display = "inline";
+hideInputs()
+plot.innerHTML=""
+result.innerHTML=""
+tableContainer.innerHTML=""
 
-  let btn = document.getElementById("intersectBtn");
-  if(btn){
-    btn.style.display = (m === "multi") ? "inline-block" : "none";
-  }
+document.getElementById("calculator").style.display="none"
+document.getElementById("plot").style.display="block"
+document.getElementById("graphButtons").style.display="block"
+func.style.display="inline"
 
-  if(m === "function"){
-    title.innerText = "Fonksiyon Grafiği";
-  }
+/* 🔥 FIX: BUTON KONTROL */
+let btn=document.getElementById("intersectBtn")
+if(btn){
+btn.style.display = (m==="multi") ? "inline-block" : "none"
+}
 
-  if(m === "multi"){
-    title.innerText = "Çoklu Fonksiyon Çizme";
-    func2.style.display = "inline";
-    func3.style.display = "inline";
-  }
+/* 🔥 TEXT FIX */
+if(m==="function"){
+title.innerText="Fonksiyon Grafiği"
+}
 
-  if(m === "derivative"){
-    title.innerText = "Türev";
-  }
+if(m==="multi"){
+title.innerText="Çoklu Fonksiyon Çizme"
+func2.style.display="inline"
+func3.style.display="inline"
+}
 
-  if(m === "integral"){
-    title.innerText = "İntegral";
-    a.style.display = "inline";
-    b.style.display = "inline";
-  }
+if(m==="derivative"){
+title.innerText="Türev"
+}
 
-  if(m === "tangent"){
-    title.innerText = "Teğet";
-    x0.style.display = "inline";
-  }
+if(m==="integral"){
+title.innerText="İntegral"
+a.style.display="inline"
+b.style.display="inline"
+}
 
-  if(m === "limit"){
-    title.innerText = "Limit";
-    x0.style.display = "inline";
-  }
+if(m==="tangent"){
+title.innerText="Teğet"
+x0.style.display="inline"
+}
 
-  if(m === "distance"){
-    title.innerText = "İki Nokta Arası Mesafe";
-    x1.style.display = "inline";
-    y1.style.display = "inline";
-    x2.style.display = "inline";
-    y2.style.display = "inline";
-  }
+if(m==="limit"){
+title.innerText="Limit"
+x0.style.display="inline"
+}
 
-  if(m === "calculator"){
-    title.innerText = "Hesap Makinesi";
-    calculator.style.display = "block";
-    plot.style.display = "none";
-    graphButtons.style.display = "none";
-    func.style.display = "none";
-  }
+if(m==="distance"){
+title.innerText="İki Nokta Arası Mesafe"
+x1.style.display="inline"
+y1.style.display="inline"
+x2.style.display="inline"
+y2.style.display="inline"
+}
+
+if(m==="calculator"){
+title.innerText="Hesap Makinesi"
+calculator.style.display="block"
+plot.style.display="none"
+graphButtons.style.display="none"
+func.style.display="none"
+}
+
 }
 
 /* ================= DRAW ================= */
 
 function draw(){
 
-  plot.innerHTML = "";
-  result.innerHTML = "";
-  tableContainer.innerHTML = "";
+plot.innerHTML=""
+result.innerHTML=""
+tableContainer.innerHTML=""
 
-  let f = func.value;
+let f=func.value
 
-  try{
+try{
 
-    let config = {
-      target: "#plot",
-      width: plot.clientWidth,
-      height: 400,
-      grid: true,
-      zoom: true,
-      pan: true,
-      data: []
-    };
+let config={
+target:"#plot",
+width:plot.clientWidth,
+height:400,
+grid:true,
+zoom:true,
+pan:true,
+data:[]
+}
 
-    if(mode === "function"){
-      config.data = [{fn: f}];
-    }
+if(mode==="function"){
+config.data=[{fn:f}]
+}
 
-    if(mode === "multi"){
-      let data = [{fn: f}];
+if(mode==="multi"){
 
-      if(func2.value) data.push({fn: func2.value});
-      if(func3.value) data.push({fn: func3.value});
+let data=[{fn:f}]
 
-      config.data = data;
-    }
+if(func2.value) data.push({fn:func2.value})
+if(func3.value) data.push({fn:func3.value})
 
-    if(mode === "derivative"){
-      let d = math.derivative(f,"x").toString();
-      result.innerHTML = "f'(x)=" + d;
-      config.data = [{fn:f},{fn:d}];
-    }
+config.data=data
+}
 
-    if(mode === "integral"){
-      let aVal = Number(a.value);
-      let bVal = Number(b.value);
+if(mode==="derivative"){
+let d=math.derivative(f,"x").toString()
+result.innerHTML="f'(x)="+d
+config.data=[{fn:f},{fn:d}]
+}
 
-      config.data = [
-        {fn:f},
-        {fn:f, range:[aVal,bVal], closed:true, color:"rgba(0,0,255,0.3)"}
-      ];
-    }
+if(mode==="integral"){
 
-    if(mode === "tangent"){
-      let x = Number(x0.value);
-      let d = math.derivative(f,"x");
-      let slope = d.evaluate({x:x});
-      let y = math.evaluate(f,{x:x});
+let aVal=Number(a.value)
+let bVal=Number(b.value)
 
-      let t = slope+"*(x-"+x+")+"+y;
-      result.innerHTML = "Teğet: " + t;
+config.data=[
+{fn:f},
+{fn:f,range:[aVal,bVal],closed:true,color:"rgba(0,0,255,0.3)"}
+]
+}
 
-      config.data = [{fn:f},{fn:t}];
-    }
+if(mode==="tangent"){
 
-    if(mode === "distance"){
-      let x1v = Number(x1.value);
-      let y1v = Number(y1.value);
-      let x2v = Number(x2.value);
-      let y2v = Number(y2.value);
+let x=Number(x0.value)
+let d=math.derivative(f,"x")
+let slope=d.evaluate({x:x})
+let y=math.evaluate(f,{x:x})
 
-      let d = Math.sqrt((x2v-x1v)**2 + (y2v-y1v)**2);
-      result.innerHTML = "Mesafe=" + d.toFixed(2);
+let t=slope+"*(x-"+x+")+"+y
+result.innerHTML="Teğet: "+t
 
-      config.data = [{
-        points:[[x1v,y1v],[x2v,y2v]],
-        fnType:"points",
-        graphType:"polyline"
-      }];
-    }
+config.data=[{fn:f},{fn:t}]
+}
 
-    currentPlot = functionPlot(config);
-    setupInteractions();
+if(mode==="distance"){
 
-  }catch(e){
-    result.innerHTML = e.message;
-  }
+let x1v=Number(x1.value)
+let y1v=Number(y1.value)
+let x2v=Number(x2.value)
+let y2v=Number(y2.value)
+
+let d=Math.sqrt((x2v-x1v)**2+(y2v-y1v)**2)
+result.innerHTML="Mesafe="+d.toFixed(2)
+
+config.data=[{
+points:[[x1v,y1v],[x2v,y2v]],
+fnType:"points",
+graphType:"polyline"
+}]
+}
+
+currentPlot=functionPlot(config)
+
+setupInteractions()
+
+}catch(e){
+result.innerHTML=e.message
+}
+
 }
 
 /* ================= INTERACTION ================= */
 
 function setupInteractions(){
 
-  let raf = null;
-  let rect = plot.getBoundingClientRect();
+let raf = null;
+let rect = plot.getBoundingClientRect();
 
-  plot.onmouseenter = function(){
-    rect = plot.getBoundingClientRect();
-  };
+plot.onmouseenter = function(){
+rect = plot.getBoundingClientRect()
+}
 
-  plot.onwheel = function(){
-    rect = plot.getBoundingClientRect();
-  };
+plot.onwheel = function(){
+rect = plot.getBoundingClientRect()
+}
 
-  plot.onmousemove = function(e){
+plot.onmousemove = function(e){
 
-    if(!currentPlot || !currentPlot.meta) return;
-    if(raf) return;
+if(!currentPlot || !currentPlot.meta) return
+if(raf) return
 
-    raf = requestAnimationFrame(()=>{
+raf = requestAnimationFrame(()=>{
 
-      let x = currentPlot.meta.xScale.invert(e.clientX - rect.left);
-      let y = currentPlot.meta.yScale.invert(e.clientY - rect.top);
+let x = currentPlot.meta.xScale.invert(e.clientX - rect.left)
+let y = currentPlot.meta.yScale.invert(e.clientY - rect.top)
 
-      coords.innerText = `x: ${x.toFixed(2)} | y: ${y.toFixed(2)}`;
+coords.innerText = `x: ${x.toFixed(2)} | y: ${y.toFixed(2)}`
 
-      raf = null;
-    });
-  };
+raf = null
+})
+}
 
-  plot.onclick = function(e){
+plot.onclick=function(e){
 
-    let rect = plot.getBoundingClientRect();
+let rect=plot.getBoundingClientRect()
 
-    let x = currentPlot.meta.xScale.invert(e.clientX - rect.left);
-    let y = currentPlot.meta.yScale.invert(e.clientY - rect.top);
+let x=currentPlot.meta.xScale.invert(e.clientX-rect.left)
+let y=currentPlot.meta.yScale.invert(e.clientY-rect.top)
 
-    functionPlot({
-      target:"#plot",
-      width:plot.clientWidth,
-      height:400,
-      grid:true,
-      zoom:true,
-      pan:true,
-      data:[
-        ...currentPlot.options.data,
-        {
-          points:[[x,y]],
-          fnType:"points",
-          graphType:"scatter",
-          color:"red"
-        }
-      ]
-    });
-  };
+functionPlot({
+target:"#plot",
+width:plot.clientWidth,
+height:400,
+grid:true,
+zoom:true,
+pan:true,
+data:[
+...currentPlot.options.data,
+{
+points:[[x,y]],
+fnType:"points",
+graphType:"scatter",
+color:"red"
+}
+]
+})
+}
+
 }
 
 /* ================= INTERSECTION ================= */
 
 function findIntersections(){
 
-  let f1 = func.value;
-  let f2 = func2.value;
+let f1=func.value
+let f2=func2.value
 
-  let pts = [];
-  let rows = "";
+let pts=[]
+let rows=""
 
-  for(let i=-50;i<=50;i+=0.1){
+for(let i=-50;i<=50;i+=0.1){
 
-    try{
-      let y1 = math.evaluate(f1,{x:i});
-      let y2 = math.evaluate(f2,{x:i});
+try{
+let y1=math.evaluate(f1,{x:i})
+let y2=math.evaluate(f2,{x:i})
 
-      if(Math.abs(y1-y2)<0.15){
+if(Math.abs(y1-y2)<0.15){
 
-        let x = i.toFixed(2);
-        let y = y1.toFixed(2);
+let x=i.toFixed(2)
+let y=y1.toFixed(2)
 
-        pts.push([Number(x),Number(y)]);
+pts.push([Number(x),Number(y)])
 
-        rows += `<tr>
-          <td>${x}</td>
-          <td>${y}</td>
-          <td>${f1} = ${f2}</td>
-        </tr>`;
-      }
-    }catch{}
-  }
+rows+=`<tr>
+<td>${x}</td>
+<td>${y}</td>
+<td>${f1} = ${f2}</td>
+</tr>`
+}
+}catch{}
 
-  functionPlot({
-    target:"#plot",
-    width:plot.clientWidth,
-    height:400,
-    grid:true,
-    zoom:true,
-    pan:true,
-    data:[
-      {fn:f1},
-      {fn:f2},
-      {points:pts, fnType:"points", graphType:"scatter", color:"red"}
-    ]
-  });
+}
 
-  tableContainer.innerHTML = `
-    <h3>Kesişim Tablosu</h3>
-    <table style="width:100%;border-collapse:collapse;">
-      <tr style="background:#2563eb;color:white;">
-        <th>X</th><th>Y</th><th>Durum</th>
-      </tr>
-      ${rows}
-    </table>
-  `;
+functionPlot({
+target:"#plot",
+width:plot.clientWidth,
+height:400,
+grid:true,
+zoom:true,
+pan:true,
+data:[
+{fn:f1},
+{fn:f2},
+{points:pts,fnType:"points",graphType:"scatter",color:"red"}
+]
+})
 
-  result.innerHTML = "Toplam kesişim: " + pts.length;
+tableContainer.innerHTML=`
+<h3>Kesişim Tablosu</h3>
+<table style="width:100%;border-collapse:collapse;">
+<tr style="background:#2563eb;color:white;">
+<th>X</th><th>Y</th><th>Durum</th>
+</tr>
+${rows}
+</table>
+`
+
+result.innerHTML="Toplam kesişim: "+pts.length
+
 }
 
 /* ================= CALC ================= */
 
-function calc(v){ calcDisplay.value += v; }
-function calculate(){ calcDisplay.value = math.evaluate(calcDisplay.value); }
-function clearCalc(){ calcDisplay.value = ""; }
+function calc(v){calcDisplay.value+=v}
+function calculate(){calcDisplay.value=math.evaluate(calcDisplay.value)}
+function clearCalc(){calcDisplay.value=""}
 
 /* ================= PERF ================= */
 
 function debounce(f,d){
-  let t;
-  return ()=>{
-    clearTimeout(t);
-    t = setTimeout(f,d);
-  };
+let t;return()=>{clearTimeout(t);t=setTimeout(f,d)}
 }
 
-/* AUTO DRAW */
-
+/* 🔥 AUTO DRAW TÜM INPUTLAR */
 [func,func2,func3,x1,y1,x2,y2,a,b,x0].forEach(el=>{
-  if(el){
-    el.addEventListener("input", debounce(draw,200));
-  }
-});
+if(el){
+el.addEventListener("input", debounce(draw,200))
+}
+})
 
-window.onload = ()=> setTimeout(draw,100);
+window.onload=()=>setTimeout(draw,100)
 
 /* ================= PNG ================= */
 
 function downloadPNG(){
+const svg = document.querySelector("#plot svg");
 
-  const svg = document.querySelector("#plot svg");
+if(!svg){
+alert("Önce grafik çiz!");
+return;
+}
 
-  if(!svg){
-    alert("Önce grafik çiz!");
-    return;
-  }
+const serializer = new XMLSerializer();
+const source = serializer.serializeToString(svg);
 
-  const serializer = new XMLSerializer();
-  const source = serializer.serializeToString(svg);
+const img = new Image();
+const svgBlob = new Blob([source], {type:"image/svg+xml;charset=utf-8"});
+const url = URL.createObjectURL(svgBlob);
 
-  const img = new Image();
-  const svgBlob = new Blob([source], {type:"image/svg+xml;charset=utf-8"});
-  const url = URL.createObjectURL(svgBlob);
+img.onload = function(){
+const canvas = document.createElement("canvas");
+canvas.width = svg.clientWidth;
+canvas.height = svg.clientHeight;
 
-  img.onload = function(){
+const ctx = canvas.getContext("2d");
 
-    const canvas = document.createElement("canvas");
-    canvas.width = svg.clientWidth;
-    canvas.height = svg.clientHeight;
+ctx.fillStyle = "white";
+ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    const ctx = canvas.getContext("2d");
+ctx.drawImage(img,0,0);
 
-    ctx.fillStyle = "white";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+URL.revokeObjectURL(url);
 
-    ctx.drawImage(img,0,0);
+const link = document.createElement("a");
+link.download = "grafik.png";
+link.href = canvas.toDataURL("image/png");
+link.click();
+};
 
-    URL.revokeObjectURL(url);
-
-    const link = document.createElement("a");
-    link.download = "grafik.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  };
-
-  img.src = url;
+img.src = url;
 }
 
 /* ================= UI ================= */
 
 function animateUI(){
-  document.querySelectorAll(".fade-slide").forEach((el,i)=>{
-    setTimeout(()=>{
-      el.classList.add("active");
-    }, i*100);
-  });
+document.querySelectorAll(".fade-slide").forEach((el,i)=>{
+setTimeout(()=>{
+el.classList.add("active")
+}, i*100)
+})
 }
 
 window.addEventListener("load", function(){
-  animateUI();
-  draw();
+animateUI();
+draw();
 });
