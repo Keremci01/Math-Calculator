@@ -1,3 +1,5 @@
+/* ================= GLOBAL ================= */
+
 let mode="function"
 let currentPlot=null
 
@@ -17,145 +19,209 @@ const y2=document.getElementById("y2")
 
 const plot=document.getElementById("plot")
 const result=document.getElementById("result")
+const tableContainer=document.getElementById("tableContainer")
 const title=document.getElementById("title")
 
-/* MENU */
+/* ================= MENU ================= */
+
 function toggleMenu(){
 document.getElementById("menu").classList.toggle("active")
 }
 
+/* 🔥 FIX: ARTIK BİRDEN FAZLA GRUP AÇILABİLİR */
 function toggleGroup(id){
-document.querySelectorAll("#menu div").forEach(d=>{
-if(d.id.includes("Group")) d.style.display="none"
-})
-document.getElementById(id).style.display="block"
+let el = document.getElementById(id)
+
+if(el.style.display==="block"){
+el.style.display="none"
+}else{
+el.style.display="block"
+}
 }
 
-/* MODE */
+/* ================= MODE ================= */
+
+function hideInputs(){
+
+func2.style.display="none"
+func3.style.display="none"
+a.style.display="none"
+b.style.display="none"
+x0.style.display="none"
+x1.style.display="none"
+y1.style.display="none"
+x2.style.display="none"
+y2.style.display="none"
+
+}
+
 function setMode(m){
 
 mode=m
 
-document.querySelectorAll("input").forEach(i=>i.style.display="none")
+hideInputs()
+plot.innerHTML=""
+result.innerHTML=""
+tableContainer.innerHTML=""
+
 document.getElementById("calculator").style.display="none"
-plot.style.display="block"
+document.getElementById("plot").style.display="block"
+
+func.style.display="inline"
+
+/* TEXT */
 
 if(m==="function"){
-title.innerText="Fonksiyon"
-func.style.display="inline"
+title.innerText="Fonksiyon Grafiği"
 }
 
 if(m==="multi"){
-title.innerText="Çoklu Fonksiyon"
-func.style.display="inline"
+title.innerText="Çoklu Fonksiyon Çizme"
 func2.style.display="inline"
 func3.style.display="inline"
 }
 
-if(m==="distance"){
-title.innerText="Mesafe"
-x1.style.display="inline"
-y1.style.display="inline"
-x2.style.display="inline"
-y2.style.display="inline"
-}
-
 if(m==="derivative"){
 title.innerText="Türev"
-func.style.display="inline"
 }
 
 if(m==="integral"){
 title.innerText="İntegral"
-func.style.display="inline"
 a.style.display="inline"
 b.style.display="inline"
 }
 
 if(m==="tangent"){
 title.innerText="Teğet"
-func.style.display="inline"
 x0.style.display="inline"
 }
 
 if(m==="limit"){
 title.innerText="Limit"
-func.style.display="inline"
 x0.style.display="inline"
+}
+
+if(m==="distance"){
+title.innerText="İki Nokta Arası Mesafe"
+x1.style.display="inline"
+y1.style.display="inline"
+x2.style.display="inline"
+y2.style.display="inline"
 }
 
 if(m==="calculator"){
 title.innerText="Hesap Makinesi"
 document.getElementById("calculator").style.display="block"
 plot.style.display="none"
+func.style.display="none"
 }
 
 }
 
-/* DRAW */
+/* ================= DRAW ================= */
+
 function draw(){
 
 plot.innerHTML=""
 result.innerHTML=""
+tableContainer.innerHTML=""
 
 let f=func.value
-if(!f && mode!=="distance") return
 
-let data=[]
+if(!f && mode!=="distance") return
 
 try{
 
-if(mode==="function"){
-data=[{fn:f}]
+let config={
+target:"#plot",
+width:plot.clientWidth,
+height:400,
+grid:true,
+data:[]
 }
 
+/* NORMAL */
+if(mode==="function"){
+config.data=[{fn:f}]
+}
+
+/* MULTI */
 if(mode==="multi"){
+
+let data=[]
 if(f) data.push({fn:f})
 if(func2.value) data.push({fn:func2.value})
 if(func3.value) data.push({fn:func3.value})
+
+config.data=data
 }
 
+/* DERIVATIVE */
 if(mode==="derivative"){
-let d=math.derivative(f,"x").toString()
-result.innerHTML="f'(x)="+d
-data=[{fn:f},{fn:d}]
+let d
+try{
+d=math.derivative(f,"x").toString()
+}catch{
+result.innerHTML="Geçersiz fonksiyon"
+return
 }
 
+result.innerHTML="f'(x)="+d
+config.data=[{fn:f},{fn:d}]
+}
+
+/* INTEGRAL */
 if(mode==="integral"){
+
 let aVal=Number(a.value)
 let bVal=Number(b.value)
+
 if(isNaN(aVal)||isNaN(bVal)) return
 
-data=[
+config.data=[
 {fn:f},
 {fn:f,range:[aVal,bVal],closed:true}
 ]
 }
 
+/* TANGENT */
 if(mode==="tangent"){
+
 let x=Number(x0.value)
 if(isNaN(x)) return
 
-let slope=math.derivative(f,"x").evaluate({x:x})
+let slope
+try{
+slope=math.derivative(f,"x").evaluate({x:x})
+}catch{
+result.innerHTML="Hata"
+return
+}
+
 let y=math.evaluate(f,{x:x})
-
 let t=`${slope}*(x-${x})+${y}`
-result.innerHTML="Teğet: "+t
 
-data=[{fn:f},{fn:t}]
+result.innerHTML="Teğet: "+t
+config.data=[{fn:f},{fn:t}]
 }
 
+/* LIMIT */
 if(mode==="limit"){
+
 let x=Number(x0.value)
 if(isNaN(x)) return
 
-let val=math.evaluate(f,{x:x})
-result.innerHTML="Limit ≈ "+val.toFixed(4)
+let left=math.evaluate(f,{x:x-0.0001})
+let right=math.evaluate(f,{x:x+0.0001})
+let val=(left+right)/2
 
-data=[{fn:f}]
+result.innerHTML="Limit ≈ "+val.toFixed(4)
+config.data=[{fn:f}]
 }
 
+/* DISTANCE */
 if(mode==="distance"){
+
 let x1v=Number(x1.value)
 let y1v=Number(y1.value)
 let x2v=Number(x2.value)
@@ -164,22 +230,16 @@ let y2v=Number(y2.value)
 if([x1v,y1v,x2v,y2v].some(isNaN)) return
 
 let d=Math.sqrt((x2v-x1v)**2+(y2v-y1v)**2)
-result.innerHTML="Mesafe = "+d.toFixed(2)
+result.innerHTML="Mesafe="+d.toFixed(2)
 
-data=[{
+config.data=[{
 points:[[x1v,y1v],[x2v,y2v]],
 fnType:"points",
 graphType:"polyline"
 }]
 }
 
-functionPlot({
-target:"#plot",
-width:plot.clientWidth,
-height:500,
-grid:true,
-data:data
-})
+currentPlot=functionPlot(config)
 
 }catch(e){
 result.innerHTML="Hata: "+e.message
@@ -187,29 +247,27 @@ result.innerHTML="Hata: "+e.message
 
 }
 
-/* DARK */
-function toggleDark(){
-document.body.classList.toggle("dark")
-}
+/* ================= CALC ================= */
 
-/* CALC */
 function calc(v){document.getElementById("calcDisplay").value+=v}
 
 function calculate(){
-try{
 let exp=document.getElementById("calcDisplay").value
 .replace(/÷/g,"/")
 .replace(/×/g,"*")
 .replace(/−/g,"-")
 
 document.getElementById("calcDisplay").value=math.evaluate(exp)
-}catch{
-alert("Hatalı işlem")
-}
 }
 
 function clearCalc(){
 document.getElementById("calcDisplay").value=""
+}
+
+/* ================= UI ================= */
+
+function toggleDark(){
+document.body.classList.toggle("dark")
 }
 
 /* AUTO */
