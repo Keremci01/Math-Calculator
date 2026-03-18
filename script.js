@@ -46,7 +46,7 @@ i.style.display="none"
 document.getElementById("calculator").style.display="none"
 plot.style.display="block"
 
-/* 🔥 DEFAULT: func gizli (fix) */
+/* DEFAULT */
 func.style.display="none"
 
 let btn=document.getElementById("mainBtn")
@@ -219,28 +219,41 @@ result.innerHTML="Mesafe = "+d.toFixed(2)
 
 plot.innerHTML=""
 
+/* 🔥 0 ORTADA + AUTO SCALE */
+let maxVal = Math.max(
+Math.abs(x1v),
+Math.abs(x2v),
+Math.abs(y1v),
+Math.abs(y2v),
+10
+)
+maxVal += 5
+
 functionPlot({
 target:"#plot",
 width:plot.clientWidth,
 height:500,
 grid:true,
-xAxis:{domain:[-10,10]},
-yAxis:{domain:[-10,10]},
+xAxis:{domain:[-maxVal,maxVal]},
+yAxis:{domain:[-maxVal,maxVal]},
 data:[
 {
 points:[[x1v,y1v]],
 fnType:"points",
-graphType:"scatter"
+graphType:"scatter",
+color:"blue"
 },
 {
 points:[[x2v,y2v]],
 fnType:"points",
-graphType:"scatter"
+graphType:"scatter",
+color:"red"
 },
 {
 points:[[x1v,y1v],[x2v,y2v]],
 fnType:"points",
-graphType:"polyline"
+graphType:"polyline",
+color:"black"
 }
 ]
 })
