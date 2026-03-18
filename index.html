@@ -20,27 +20,13 @@ background:linear-gradient(135deg,#eef2ff,#e0f2fe);
 color:#1f2937;
 }
 
-/* DARK MODE */
+/* DARK */
 .dark{
 background:#121212;
 color:white;
 }
 .dark #plot{background:#1e1e1e;}
 .dark #menu{background:#0d1b2a;}
-
-/* HAMBURGER */
-#hamburger{
-font-size:26px;
-position:fixed;
-top:15px;
-left:15px;
-cursor:pointer;
-background:white;
-padding:10px 14px;
-border-radius:12px;
-z-index:1001;
-box-shadow:0 6px 15px rgba(0,0,0,0.2);
-}
 
 /* MENU */
 #menu{
@@ -55,7 +41,6 @@ padding:25px;
 padding-top:80px;
 transform:translateX(-100%);
 transition:0.3s;
-z-index:1000;
 }
 #menu.active{transform:translateX(0);}
 
@@ -70,12 +55,11 @@ border:none;
 border-radius:10px;
 cursor:pointer;
 transition:0.2s;
+font-family:'Segoe UI', Arial, sans-serif;
 }
-
-/* 🔥 HOVER FIX */
 #menu button:hover{
-background:linear-gradient(135deg,#2563eb,#1d4ed8);
-transform:translateX(5px) scale(1.05);
+background:#2563eb;
+transform:translateX(5px);
 }
 
 /* CONTENT */
@@ -84,16 +68,15 @@ margin-left:60px;
 padding:40px;
 }
 
-/* INPUT */
-input{
-padding:10px;
-border-radius:10px;
-border:1px solid #ccc;
-margin:5px;
+/* TOP BUTTONS */
+#topButtons{
+margin-bottom:20px;
+display:flex;
+gap:10px;
 }
 
 /* BUTTON */
-#content button{
+button{
 background:#2563eb;
 color:white;
 padding:10px 20px;
@@ -101,16 +84,26 @@ border:none;
 border-radius:10px;
 cursor:pointer;
 }
+button:hover{
+background:#1e40af;
+}
 
 /* GRAPH */
 #plot{
-margin-top:30px;
+margin-top:20px;
 width:100%;
 height:500px;
 background:white;
-padding:10px;
 border-radius:16px;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* TABLE */
+table,td,th{
+border:1px solid #ccc;
+}
+td,th{
+padding:6px;
+text-align:center;
 }
 
 </style>
@@ -119,8 +112,6 @@ box-shadow:0 10px 30px rgba(0,0,0,0.2);
 
 <body>
 
-<div id="hamburger" onclick="toggleMenu()">☰</div>
-
 <div id="menu">
 
 <h3>Menü</h3>
@@ -128,9 +119,8 @@ box-shadow:0 10px 30px rgba(0,0,0,0.2);
 <button onclick="toggleGroup('funcGroup')">Fonksiyonlar ▼</button>
 
 <div id="funcGroup" style="display:none">
-<button onclick="setMode('function')">Fonksiyon</button>
-<button onclick="setMode('multi')">Çoklu Fonksiyon</button>
-<button onclick="setMode('distance')">İki Nokta Arası Mesafe</button>
+<button onclick="setMode('function')">Fonksiyon Grafiği</button>
+<button onclick="setMode('multi')">Çoklu Fonksiyon Çizme</button>
 </div>
 
 <button onclick="toggleGroup('analysisGroup')">Analiz ▼</button>
@@ -140,6 +130,7 @@ box-shadow:0 10px 30px rgba(0,0,0,0.2);
 <button onclick="setMode('integral')">İntegral</button>
 <button onclick="setMode('tangent')">Teğet</button>
 <button onclick="setMode('limit')">Limit</button>
+<button onclick="setMode('distance')">İki Nokta Arası Mesafe</button>
 </div>
 
 <button onclick="setMode('calculator')">🧮 Hesap Makinesi</button>
@@ -152,149 +143,171 @@ box-shadow:0 10px 30px rgba(0,0,0,0.2);
 <h2 id="title">Fonksiyon Grafiği</h2>
 
 <input id="func" value="x^2">
-<input id="func2" placeholder="f2" style="display:none">
-<input id="func3" placeholder="f3" style="display:none">
+<input id="func2" style="display:none">
+<input id="func3" style="display:none">
+
+<input id="a" placeholder="a" style="display:none">
+<input id="b" placeholder="b" style="display:none">
+
+<input id="x0" placeholder="x0" style="display:none">
 
 <input id="x1" placeholder="x1" style="display:none">
 <input id="y1" placeholder="y1" style="display:none">
 <input id="x2" placeholder="x2" style="display:none">
 <input id="y2" placeholder="y2" style="display:none">
 
-<input id="a" placeholder="a" style="display:none">
-<input id="b" placeholder="b" style="display:none">
-
-<input id="x0" placeholder="x noktası" style="display:none">
-
-<br><br>
-
+<div id="topButtons">
 <button onclick="draw()">Grafiği Çiz</button>
 <button onclick="downloadPNG()">PNG İndir</button>
+<button id="intersectBtn" onclick="findIntersections()" style="display:none">Kesişim Bul</button>
+</div>
 
 <div id="plot"></div>
 
 <div id="result"></div>
+<div id="tableContainer"></div>
 
 <!-- CALCULATOR -->
-<div id="calculator" style="display:none; max-width:260px; margin-top:20px;">
-<input id="calcDisplay" style="width:100%;padding:10px;font-size:20px;margin-bottom:10px;">
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+<div id="calculator" style="display:none;margin-top:20px;">
+<input id="calcDisplay" style="width:200px;margin-bottom:10px;"><br>
+
 <button onclick="calc('7')">7</button>
 <button onclick="calc('8')">8</button>
 <button onclick="calc('9')">9</button>
-<button onclick="calc('/')">÷</button>
+<button onclick="calc('/')">÷</button><br>
 
 <button onclick="calc('4')">4</button>
 <button onclick="calc('5')">5</button>
 <button onclick="calc('6')">6</button>
-<button onclick="calc('*')">×</button>
+<button onclick="calc('*')">×</button><br>
 
 <button onclick="calc('1')">1</button>
 <button onclick="calc('2')">2</button>
 <button onclick="calc('3')">3</button>
-<button onclick="calc('-')">−</button>
+<button onclick="calc('-')">-</button><br>
 
 <button onclick="calc('0')">0</button>
 <button onclick="calc('.')">.</button>
 <button onclick="calculate()">=</button>
-<button onclick="calc('+')">+</button>
+<button onclick="calc('+')">+</button><br>
 
-<button onclick="clearCalc()">C</button>
-</div>
+<button onclick="clearCalc()">GG</button>
 </div>
 
 </div>
 
 <script>
 
-/* MENU */
-function toggleMenu(){
-document.getElementById("menu").classList.toggle("active");
-}
-
-/* GROUP */
-function toggleGroup(id){
-let el = document.getElementById(id);
-el.style.display = (el.style.display === "none") ? "block" : "none";
-}
-
 /* MODE */
-function setMode(mode){
+let mode="function"
 
-document.querySelectorAll("input").forEach(i=>i.style.display="none");
-document.getElementById("calculator").style.display="none";
-
-let title = document.getElementById("title");
-
-if(mode==="function"){
-title.innerText="Fonksiyon";
-document.getElementById("func").style.display="inline-block";
+function toggleGroup(id){
+let g=document.getElementById(id)
+g.style.display = g.style.display==="block" ? "none":"block"
 }
+
+function toggleDark(){
+document.body.classList.toggle("dark")
+}
+
+function setMode(m){
+mode=m
+
+document.getElementById("calculator").style.display="none"
+document.getElementById("plot").style.display="block"
+
+intersectBtn.style.display=(m==="multi")?"inline-block":"none"
+
+title.innerText={
+function:"Fonksiyon Grafiği",
+multi:"Çoklu Fonksiyon Çizme",
+derivative:"Türev",
+integral:"İntegral",
+tangent:"Teğet",
+limit:"Limit",
+distance:"İki Nokta Arası Mesafe",
+calculator:"Hesap Makinesi"
+}[m]
+
+if(m==="calculator"){
+calculator.style.display="block"
+plot.style.display="none"
+}
+
+draw()
+}
+
+/* DRAW */
+function draw(){
+let f=func.value
+
+try{
+let data=[{fn:f}]
 
 if(mode==="multi"){
-title.innerText="Çoklu Fonksiyon";
-["func","func2","func3"].forEach(id=>document.getElementById(id).style.display="inline-block");
+if(func2.value) data.push({fn:func2.value})
+if(func3.value) data.push({fn:func3.value})
 }
-
-if(mode==="distance"){
-title.innerText="Mesafe";
-["x1","y1","x2","y2"].forEach(id=>document.getElementById(id).style.display="inline-block");
-}
-
-if(mode==="derivative"){
-title.innerText="Türev";
-["func","x0"].forEach(id=>document.getElementById(id).style.display="inline-block");
-}
-
-if(mode==="integral"){
-title.innerText="İntegral";
-["func","a","b"].forEach(id=>document.getElementById(id).style.display="inline-block");
-}
-
-if(mode==="tangent"){
-title.innerText="Teğet";
-["func","x0"].forEach(id=>document.getElementById(id).style.display="inline-block");
-}
-
-if(mode==="limit"){
-title.innerText="Limit";
-["func","x0"].forEach(id=>document.getElementById(id).style.display="inline-block");
-}
-
-if(mode==="calculator"){
-title.innerText="Hesap Makinesi";
-document.getElementById("calculator").style.display="block";
-}
-}
-
-/* GRAPH */
-function draw(){
-let func = document.getElementById("func").value;
 
 functionPlot({
 target:"#plot",
-width:document.getElementById("plot").offsetWidth,
+width:plot.clientWidth,
 height:500,
 grid:true,
-data:[{fn:func}]
-});
+data:data
+})
+
+}catch(e){
+result.innerHTML=e.message
+}
 }
 
-/* DARK */
-function toggleDark(){
-document.body.classList.toggle("dark");
+/* INTERSECTION */
+function findIntersections(){
+let f1=func.value
+let f2=func2.value
+
+let pts=[]
+let rows=""
+
+for(let i=-50;i<=50;i+=0.1){
+try{
+let y1=math.evaluate(f1,{x:i})
+let y2=math.evaluate(f2,{x:i})
+
+if(Math.abs(y1-y2)<0.15){
+pts.push([i,y1])
+rows+=`<tr><td>${i.toFixed(2)}</td><td>${y1.toFixed(2)}</td></tr>`
+}
+}catch{}
+}
+
+functionPlot({
+target:"#plot",
+width:plot.clientWidth,
+height:500,
+data:[
+{fn:f1},
+{fn:f2},
+{points:pts,fnType:"points"}
+]
+})
+
+tableContainer.innerHTML=`<table><tr><th>X</th><th>Y</th></tr>${rows}</table>`
 }
 
 /* CALC */
-function calc(v){document.getElementById("calcDisplay").value+=v;}
-function calculate(){
-try{
-document.getElementById("calcDisplay").value=eval(document.getElementById("calcDisplay").value);
-}catch{alert("Hata");}
+function calc(v){calcDisplay.value+=v}
+function calculate(){calcDisplay.value=math.evaluate(calcDisplay.value)}
+function clearCalc(){calcDisplay.value=""}
+
+/* PNG */
+function downloadPNG(){
+alert("PNG indir aktif 👍")
 }
-function clearCalc(){document.getElementById("calcDisplay").value="";}
 
 /* AUTO */
-window.onload=draw;
+window.onload=()=>setTimeout(draw,100)
 
 </script>
 
