@@ -145,3 +145,16 @@ box-shadow:none !important;
 padding:0 !important;
 border-radius:0 !important;
 }
+
+body.dark{
+background:#0f172a;
+color:white;
+}
+
+body.dark #menu{
+background:#020617;
+}
+
+body.dark #plot{
+background:#020617;
+}
