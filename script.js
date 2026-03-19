@@ -94,6 +94,10 @@ document.getElementById("calcDisplay").style.display="block"
 btn.style.display="none"
 }
 
+/* 🔥 FIX: eski grafiği sil */
+plot.innerHTML=""
+result.innerHTML=""
+
 }
 
 /* ================= DRAW ================= */
@@ -121,7 +125,7 @@ data=[{fn:f}]
 
 /* ---------- MULTI ---------- */
 if(mode==="multi"){
-if(f) data.push({fn:f}) // 1. grafik normal
+if(f) data.push({fn:f})
 
 if(func2.value){
 data.push({
@@ -144,8 +148,8 @@ let d=math.derivative(f,"x").toString()
 result.innerHTML="f'(x)="+d
 
 data=[
-{fn:f}, // ana
-{fn:d,color:"yellow"} // türev SARı
+{fn:f},
+{fn:d,color:"yellow"}
 ]
 }
 
@@ -161,12 +165,12 @@ data=[
 fn:f,
 range:[aVal,bVal],
 closed:true,
-color:"rgba(255,255,0,0.3)" // sarı alan
+color:"rgba(255,255,0,0.3)"
 }
 ]
 }
 
-/* ---------- TANGENT (FIXLENDİ) ---------- */
+/* ---------- TANGENT ---------- */
 if(mode==="tangent"){
 let x=Number(x0.value)
 if(isNaN(x)) return
@@ -180,7 +184,7 @@ result.innerHTML="Teğet: "+t
 
 data=[
 {fn:f},
-{fn:t,color:"yellow"} // teğet SARı
+{fn:t,color:"yellow"}
 ]
 }
 
@@ -195,22 +199,24 @@ result.innerHTML="Limit ≈ "+val.toFixed(4)
 data=[{fn:f}]
 }
 
+/* 🔥 ORTALAMA DOMAIN FIX */
 functionPlot({
 target:"#plot",
 width:plot.clientWidth,
 height:500,
 grid:true,
+xAxis:{domain:[-10,10]},
+yAxis:{domain:[-10,10]},
 data:data
 })
 
-/* 🔥 DARK MODE (RENK BOZMAYAN FIX) */
+/* 🔥 DARK MODE FIX */
 setTimeout(()=>{
 if(document.body.classList.contains("dark")){
 let svg = document.querySelector("#plot svg")
 
 if(svg){
 
-/* sadece renksizleri beyaz yap */
 svg.querySelectorAll("path").forEach(p=>{
 if(!p.getAttribute("stroke")){
 p.style.stroke="#ffffff"
@@ -235,6 +241,17 @@ result.innerHTML="Hata: "+e.message
 }
 
 }
+
+/* ================= AUTO DRAW ================= */
+
+[func,func2,func3,a,b,x0].forEach(input=>{
+if(input){
+input.addEventListener("input", ()=>{
+clearTimeout(window.drawTimeout)
+window.drawTimeout = setTimeout(draw,300)
+})
+}
+})
 
 /* ================= PNG ================= */
 
