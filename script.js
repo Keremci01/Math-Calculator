@@ -172,13 +172,37 @@ grid:true,
 data:data
 })
 
+/* 🔥 DARK MODE GRAFİK BOOST */
+setTimeout(()=>{
+if(document.body.classList.contains("dark")){
+let svg = document.querySelector("#plot svg")
+
+if(svg){
+
+svg.querySelectorAll("path").forEach(p=>{
+p.style.stroke="#ffffff"
+p.style.strokeWidth="2.5"
+})
+
+svg.querySelectorAll(".grid line").forEach(l=>{
+l.style.stroke="#444"
+})
+
+svg.querySelectorAll("text").forEach(t=>{
+t.style.fill="#ccc"
+})
+
+}
+}
+},50)
+
 }catch(e){
 result.innerHTML="Hata: "+e.message
 }
 
 }
 
-/* ================= PNG DOWNLOAD ================= */
+/* ================= PNG ================= */
 
 function downloadPNG(){
 let svg = document.querySelector("#plot svg")
@@ -204,33 +228,11 @@ a.click()
 }
 }
 
-/* ================= CALC ================= */
-
-function calc(v){
-document.getElementById("calcDisplay").value+=v
-}
-
-function calculate(){
-try{
-let exp=document.getElementById("calcDisplay").value
-.replace(/÷/g,"/")
-.replace(/×/g,"*")
-.replace(/−/g,"-")
-
-document.getElementById("calcDisplay").value=math.evaluate(exp)
-}catch{
-alert("Hatalı işlem")
-}
-}
-
-function clearCalc(){
-document.getElementById("calcDisplay").value=""
-}
-
 /* ================= DARK MODE ================= */
 
 function toggleDark(){
 document.body.classList.toggle("dark")
+draw()
 }
 
 /* AUTO */
