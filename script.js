@@ -47,8 +47,6 @@ let btn=document.getElementById("mainBtn")
 btn.innerText="Grafiği Çiz"
 btn.style.display="inline-block"
 
-const pngBtn = document.querySelector('button[onclick="downloadPNG()"]')
-
 if(m==="function"){
 title.innerText="Fonksiyon"
 func.style.display="inline"
@@ -96,14 +94,10 @@ document.getElementById("calcDisplay").style.display="block"
 btn.style.display="none"
 }
 
-if(m==="calculator"){
-pngBtn.style.display="none"
-}else{
-pngBtn.style.display="inline-block"
-}
-
+/* 🔥 FIX: eski grafiği sil */
 plot.innerHTML=""
 result.innerHTML=""
+
 }
 
 /* ================= DRAW ================= */
@@ -126,26 +120,24 @@ try{
 
 /* ---------- NORMAL ---------- */
 if(mode==="function"){
-data=[{fn:f, graphType:"polyline", color:"#2d7ff9"}]
+data=[{fn:f}]
 }
 
 /* ---------- MULTI ---------- */
 if(mode==="multi"){
-if(f) data.push({fn:f, graphType:"polyline"})
+if(f) data.push({fn:f})
 
 if(func2.value){
 data.push({
 fn:func2.value,
-graphType:"polyline",
-color:"orange"
+color:"yellow"
 })
 }
 
 if(func3.value){
 data.push({
 fn:func3.value,
-graphType:"polyline",
-color:"lime"
+color: document.body.classList.contains("dark") ? "purple" : undefined
 })
 }
 }
@@ -156,8 +148,8 @@ let d=math.derivative(f,"x").toString()
 result.innerHTML="f'(x)="+d
 
 data=[
-{fn:f, graphType:"polyline"},
-{fn:d, graphType:"polyline", color:"orange"}
+{fn:f},
+{fn:d,color:"yellow"}
 ]
 }
 
@@ -168,12 +160,12 @@ let bVal=Number(b.value)
 if(isNaN(aVal)||isNaN(bVal)) return
 
 data=[
-{fn:f, graphType:"polyline"},
+{fn:f},
 {
 fn:f,
 range:[aVal,bVal],
 closed:true,
-color:"rgba(255,165,0,0.3)"
+color:"rgba(255,255,0,0.3)"
 }
 ]
 }
@@ -191,8 +183,8 @@ let t = `${slope}*(x-${x})+${y}`
 result.innerHTML="Teğet: "+t
 
 data=[
-{fn:f, graphType:"polyline"},
-{fn:t, graphType:"polyline", color:"orange"}
+{fn:f},
+{fn:t,color:"yellow"}
 ]
 }
 
@@ -204,27 +196,44 @@ if(isNaN(x)) return
 let val=math.evaluate(f,{x:x})
 result.innerHTML="Limit ≈ "+val.toFixed(4)
 
-data=[{fn:f, graphType:"polyline"}]
+data=[{fn:f}]
 }
 
-/* 🔥 GRAFİK (ESKİ GİBİ NET) */
+/* 🔥 ORTALAMA DOMAIN FIX */
 functionPlot({
 target:"#plot",
 width:plot.clientWidth,
 height:500,
 grid:true,
-disableZoom:true,
+xAxis:{domain:[-10,10]},
+yAxis:{domain:[-10,10]},
 data:data
 })
 
-/* 🔥 HOVER NOKTA SİL */
+/* 🔥 DARK MODE FIX */
 setTimeout(()=>{
+if(document.body.classList.contains("dark")){
 let svg = document.querySelector("#plot svg")
-if(!svg) return
 
-svg.querySelectorAll("circle").forEach(c=>c.remove())
-svg.querySelectorAll(".tip").forEach(t=>t.remove())
+if(svg){
 
+svg.querySelectorAll("path").forEach(p=>{
+if(!p.getAttribute("stroke")){
+p.style.stroke="#ffffff"
+}
+p.style.strokeWidth="2.2"
+})
+
+svg.querySelectorAll(".grid line").forEach(l=>{
+l.style.stroke="#444"
+})
+
+svg.querySelectorAll("text").forEach(t=>{
+t.style.fill="#ccc"
+})
+
+}
+}
 },50)
 
 }catch(e){
