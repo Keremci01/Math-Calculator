@@ -114,22 +114,42 @@ let data=[]
 
 try{
 
+/* ---------- NORMAL ---------- */
 if(mode==="function"){
 data=[{fn:f}]
 }
 
+/* ---------- MULTI ---------- */
 if(mode==="multi"){
-if(f) data.push({fn:f})
-if(func2.value) data.push({fn:func2.value})
-if(func3.value) data.push({fn:func3.value})
+if(f) data.push({fn:f}) // 1. grafik normal
+
+if(func2.value){
+data.push({
+fn:func2.value,
+color:"yellow"
+})
 }
 
+if(func3.value){
+data.push({
+fn:func3.value,
+color: document.body.classList.contains("dark") ? "purple" : undefined
+})
+}
+}
+
+/* ---------- DERIVATIVE ---------- */
 if(mode==="derivative"){
 let d=math.derivative(f,"x").toString()
 result.innerHTML="f'(x)="+d
-data=[{fn:f},{fn:d}]
+
+data=[
+{fn:f}, // ana
+{fn:d,color:"yellow"} // türev SARı
+]
 }
 
+/* ---------- INTEGRAL ---------- */
 if(mode==="integral"){
 let aVal=Number(a.value)
 let bVal=Number(b.value)
@@ -137,23 +157,34 @@ if(isNaN(aVal)||isNaN(bVal)) return
 
 data=[
 {fn:f},
-{fn:f,range:[aVal,bVal],closed:true}
+{
+fn:f,
+range:[aVal,bVal],
+closed:true,
+color:"rgba(255,255,0,0.3)" // sarı alan
+}
 ]
 }
 
+/* ---------- TANGENT (FIXLENDİ) ---------- */
 if(mode==="tangent"){
 let x=Number(x0.value)
 if(isNaN(x)) return
 
-let slope=math.derivative(f,"x").evaluate({x:x})
-let y=math.evaluate(f,{x:x})
+let slope = math.derivative(f,"x").evaluate({x:x})
+let y = math.evaluate(f,{x:x})
 
-let t=`${slope}*(x-${x})+${y}`
+let t = `${slope}*(x-${x})+${y}`
+
 result.innerHTML="Teğet: "+t
 
-data=[{fn:f},{fn:t}]
+data=[
+{fn:f},
+{fn:t,color:"yellow"} // teğet SARı
+]
 }
 
+/* ---------- LIMIT ---------- */
 if(mode==="limit"){
 let x=Number(x0.value)
 if(isNaN(x)) return
@@ -172,16 +203,19 @@ grid:true,
 data:data
 })
 
-/* 🔥 DARK MODE GRAFİK BOOST */
+/* 🔥 DARK MODE (RENK BOZMAYAN FIX) */
 setTimeout(()=>{
 if(document.body.classList.contains("dark")){
 let svg = document.querySelector("#plot svg")
 
 if(svg){
 
+/* sadece renksizleri beyaz yap */
 svg.querySelectorAll("path").forEach(p=>{
+if(!p.getAttribute("stroke")){
 p.style.stroke="#ffffff"
-p.style.strokeWidth="2.5"
+}
+p.style.strokeWidth="2.2"
 })
 
 svg.querySelectorAll(".grid line").forEach(l=>{
