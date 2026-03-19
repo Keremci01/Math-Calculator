@@ -11,11 +11,6 @@ const a=document.getElementById("a")
 const b=document.getElementById("b")
 const x0=document.getElementById("x0")
 
-const x1=document.getElementById("x1")
-const y1=document.getElementById("y1")
-const x2=document.getElementById("x2")
-const y2=document.getElementById("y2")
-
 const plot=document.getElementById("plot")
 const result=document.getElementById("result")
 const title=document.getElementById("title")
@@ -46,14 +41,11 @@ i.style.display="none"
 document.getElementById("calculator").style.display="none"
 plot.style.display="block"
 
-/* DEFAULT */
 func.style.display="none"
 
 let btn=document.getElementById("mainBtn")
 btn.innerText="Grafiği Çiz"
 btn.style.display="inline-block"
-
-/* MOD */
 
 if(m==="function"){
 title.innerText="Fonksiyon"
@@ -65,17 +57,6 @@ title.innerText="Çoklu Fonksiyon"
 func.style.display="inline"
 func2.style.display="inline"
 func3.style.display="inline"
-}
-
-if(m==="distance"){
-title.innerText="Mesafe"
-
-x1.style.display="inline"
-y1.style.display="inline"
-x2.style.display="inline"
-y2.style.display="inline"
-
-btn.innerText="Sonucu Bul"
 }
 
 if(m==="derivative"){
@@ -115,17 +96,11 @@ btn.style.display="none"
 
 }
 
-/* ================= BUTTON LOGIC ================= */
+/* ================= DRAW ================= */
 
 function handleMainButton(){
-if(mode==="distance"){
-calcDistance()
-}else{
 draw()
 }
-}
-
-/* ================= DRAW ================= */
 
 function draw(){
 
@@ -203,61 +178,30 @@ result.innerHTML="Hata: "+e.message
 
 }
 
-/* ================= DISTANCE ================= */
+/* ================= PNG DOWNLOAD ================= */
 
-function calcDistance(){
+function downloadPNG(){
+let svg = document.querySelector("#plot svg")
+let serializer = new XMLSerializer()
+let source = serializer.serializeToString(svg)
 
-let x1v=Number(x1.value)
-let y1v=Number(y1.value)
-let x2v=Number(x2.value)
-let y2v=Number(y2.value)
+let img = new Image()
+img.src = "data:image/svg+xml;base64," + btoa(source)
 
-if([x1v,y1v,x2v,y2v].some(isNaN)) return
+let canvas = document.createElement("canvas")
+canvas.width = 800
+canvas.height = 500
 
-let d=Math.sqrt((x2v-x1v)**2+(y2v-y1v)**2)
-result.innerHTML="Mesafe = "+d.toFixed(2)
+let ctx = canvas.getContext("2d")
 
-plot.innerHTML=""
+img.onload = function(){
+ctx.drawImage(img,0,0)
 
-/* 🔥 0 ORTADA + AUTO SCALE */
-let maxVal = Math.max(
-Math.abs(x1v),
-Math.abs(x2v),
-Math.abs(y1v),
-Math.abs(y2v),
-10
-)
-maxVal += 5
-
-functionPlot({
-target:"#plot",
-width:plot.clientWidth,
-height:500,
-grid:true,
-xAxis:{domain:[-maxVal,maxVal]},
-yAxis:{domain:[-maxVal,maxVal]},
-data:[
-{
-points:[[x1v,y1v]],
-fnType:"points",
-graphType:"scatter",
-color:"blue"
-},
-{
-points:[[x2v,y2v]],
-fnType:"points",
-graphType:"scatter",
-color:"red"
-},
-{
-points:[[x1v,y1v],[x2v,y2v]],
-fnType:"points",
-graphType:"polyline",
-color:"black"
+let a = document.createElement("a")
+a.download = "grafik.png"
+a.href = canvas.toDataURL("image/png")
+a.click()
 }
-]
-})
-
 }
 
 /* ================= CALC ================= */
@@ -283,7 +227,7 @@ function clearCalc(){
 document.getElementById("calcDisplay").value=""
 }
 
-/* ================= UI ================= */
+/* ================= DARK MODE ================= */
 
 function toggleDark(){
 document.body.classList.toggle("dark")
