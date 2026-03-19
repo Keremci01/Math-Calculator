@@ -146,15 +146,35 @@ padding:0 !important;
 border-radius:0 !important;
 }
 
+/* 🔥 GERÇEK SİYAH DARK MODE */
+
 body.dark{
-background:#0f172a;
+background:#000 !important;
 color:white;
 }
 
-body.dark #menu{
-background:#020617;
+/* grafik container */
+body.dark #plot{
+background:#000 !important;
 }
 
-body.dark #plot{
-background:#020617;
+/* SVG içini zorla siyah yap */
+body.dark #plot svg{
+background:#000 !important;
+}
+
+/* grid çizgileri */
+body.dark #plot .grid line{
+stroke:#333 !important;
+}
+
+/* eksen yazıları */
+body.dark #plot text{
+fill:#ccc !important;
+}
+
+/* çizgi (fonksiyon) */
+body.dark #plot path{
+stroke:#fff !important;
+stroke-width:2.5 !important;
 }
