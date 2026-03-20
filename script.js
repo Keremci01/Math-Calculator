@@ -32,6 +32,10 @@ function setMode(m){
 
 mode=m
 
+/* 🔥 EKLEDİĞİM YER (TEMİZLEME) */
+plot.innerHTML=""
+result.innerHTML=""
+
 document.querySelectorAll("input").forEach(i=>{
 if(i.id!=="calcDisplay"){
 i.style.display="none"
