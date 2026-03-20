@@ -1,4 +1,3 @@
-/* TÜM BUTONLARIN TARAYICI STİLİNİ SIFIRLA */
 
 button{
 appearance:none;
@@ -9,8 +8,6 @@ outline:none;
 background:none;
 font-family:inherit;
 }
-
-/* MODERN MAVİ BUTON */
 
 #content button{
 
@@ -35,8 +32,6 @@ transition:all 0.2s ease;
 
 }
 
-/* HOVER */
-
 #content button:hover{
 
 background:#1e40af;
@@ -44,8 +39,6 @@ background:#1e40af;
 transform:translateY(-2px);
 
 }
-
-/* TIKLANINCA */
 
 #content button:active{
 
