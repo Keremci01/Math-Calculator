@@ -1,8 +1,6 @@
-/* ================= GLOBAL ================= */
 
 let mode="function"
 
-/* ELEMENTLER */
 const func=document.getElementById("func")
 const func2=document.getElementById("func2")
 const func3=document.getElementById("func3")
@@ -15,10 +13,7 @@ const plot=document.getElementById("plot")
 const result=document.getElementById("result")
 const title=document.getElementById("title")
 
-/* 🔥 EKLEDİM */
 const pngBtn = document.getElementById("pngBtn")
-
-/* ================= MENU ================= */
 
 function toggleMenu(){
 document.getElementById("menu").classList.toggle("active")
@@ -29,13 +24,11 @@ let el = document.getElementById(id)
 el.style.display = (el.style.display==="block") ? "none" : "block"
 }
 
-/* ================= MODE ================= */
 
 function setMode(m){
 
 mode=m
 
-/* 🔥 TEMİZLEME */
 plot.innerHTML=""
 result.innerHTML=""
 
@@ -101,7 +94,6 @@ document.getElementById("calcDisplay").style.display="block"
 btn.style.display="none"
 }
 
-/* 🔥 PNG BUTON KONTROL */
 if(m==="calculator"){
 pngBtn.style.display="none"
 }else{
@@ -110,7 +102,6 @@ pngBtn.style.display="inline-block"
 
 }
 
-/* ================= DRAW ================= */
 
 function handleMainButton(){
 draw()
@@ -192,7 +183,6 @@ result.innerHTML="Hata: "+e.message
 
 }
 
-/* ================= PNG DOWNLOAD FIX ================= */
 
 function downloadPNG(){
 let svg = document.querySelector("#plot svg")
@@ -230,7 +220,6 @@ a.click()
 img.src = url
 }
 
-/* ================= CALC ================= */
 
 function calc(v){
 document.getElementById("calcDisplay").value+=v
@@ -253,11 +242,9 @@ function clearCalc(){
 document.getElementById("calcDisplay").value=""
 }
 
-/* ================= DARK MODE ================= */
 
 function toggleDark(){
 document.body.classList.toggle("dark")
 }
 
-/* AUTO */
 window.onload=()=>draw()
