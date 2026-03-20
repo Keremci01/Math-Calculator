@@ -178,30 +178,44 @@ result.innerHTML="Hata: "+e.message
 
 }
 
-/* ================= PNG DOWNLOAD ================= */
+/* ================= PNG DOWNLOAD FIX ================= */
 
 function downloadPNG(){
 let svg = document.querySelector("#plot svg")
+if(!svg) return alert("Önce grafik çiz!")
+
 let serializer = new XMLSerializer()
 let source = serializer.serializeToString(svg)
 
+/* 🔥 UNICODE FIX */
+let svgBlob = new Blob([source], {type:"image/svg+xml;charset=utf-8"})
+let url = URL.createObjectURL(svgBlob)
+
 let img = new Image()
-img.src = "data:image/svg+xml;base64," + btoa(source)
+
+img.onload = function(){
 
 let canvas = document.createElement("canvas")
-canvas.width = 800
-canvas.height = 500
+canvas.width = svg.clientWidth
+canvas.height = svg.clientHeight
 
 let ctx = canvas.getContext("2d")
 
-img.onload = function(){
+/* 🔥 ARKA PLAN (beyaz) */
+ctx.fillStyle = "#ffffff"
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
 ctx.drawImage(img,0,0)
+
+URL.revokeObjectURL(url)
 
 let a = document.createElement("a")
 a.download = "grafik.png"
 a.href = canvas.toDataURL("image/png")
 a.click()
 }
+
+img.src = url
 }
 
 /* ================= CALC ================= */
