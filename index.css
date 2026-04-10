@@ -157,3 +157,8 @@ body.dark #plot path{
 stroke:#fff !important;
 stroke-width:2.5 !important;
 }
+
+.seo-title{
+  position: absolute;
+  left: -9999px;
+}
